@@ -39,7 +39,7 @@
     header.scrolled { background: rgba(246,242,236,.95); backdrop-filter: blur(12px); color: var(--charcoal); border-bottom: 1px solid rgba(28,26,23,.08); box-shadow: 0 4px 20px rgba(0,0,0,.08); }
     .logo { display: flex; align-items: center; transition: color .5s ease; }
     .logo img { height: 64px; width: auto; display: block; }
-    header:not(.scrolled) .logo img { filter: drop-shadow(0 0 3px rgba(255,255,255,.7)); }
+    header:not(.scrolled) .logo img { filter: drop-shadow(0 0 4px rgba(255,255,255,1)) drop-shadow(0 0 8px rgba(255,255,255,.85)); }
     .menu { display: flex; flex: 1; gap: 2.5rem; align-items: center; margin-left: 2.5rem; justify-content: flex-end; }
     .menu a { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; opacity: .85; transition: .2s; }
     .menu a:hover { opacity: 1; color: var(--gold); }
