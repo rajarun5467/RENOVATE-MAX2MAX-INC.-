@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renovate Max2Max Inc. | Tile &amp; Renovation Services Edmonton</title>
+  <meta name="description" content="Professional tile installation, bathroom upgrades, custom showers, waterproofing, kitchen backsplashes, flooring and renovation services in Edmonton, Alberta. Residential &amp; Commercial.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #111;
+      --charcoal: #1f1f1f;
+      --white: #fff;
+      --off: #f5f3ef;
+      --gold: #bfa35f;
+      --gray: #6e6e6e;
+      --light-gray: #e0e0e0;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--black);
+      background: var(--off);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 { font-family: 'Cormorant Garamond', Georgia, serif; margin: 0; font-weight: 400; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    .eyebrow { font-size: .7rem; text-transform: uppercase; letter-spacing: .25em; color: var(--gold); margin-bottom: 1rem; }
+    .link-underline { position: relative; display: inline-block; }
+    .link-underline::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: currentColor; transition: width .5s ease; }
+    .link-underline:hover::after { width: 100%; }
+    .container { width: min(90%, 1200px); margin: 0 auto; }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      color: #fff; transition: .5s ease;
+    }
+    header .header-inner {
+      max-width: 1600px; margin: 0 auto; padding: 1.25rem 5%;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    header.scrolled { background: rgba(246,242,236,.92); backdrop-filter: blur(12px); color: var(--charcoal); border-bottom: 1px solid rgba(28,26,23,.08); }
+    .logo { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.6rem; letter-spacing: -0.04em; }
+    .logo .dot { color: var(--gold); }
+    .menu { display: flex; gap: 2.5rem; align-items: center; }
+    .menu a { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; opacity: .85; transition: .2s; }
+    .menu a:hover { opacity: 1; color: var(--gold); }
+    .menu a[href^="tel:"] { color: var(--gold); }
+    .menu-toggle { display: none; background: none; border: none; color: inherit; cursor: pointer; }
+    .menu-toggle span { display: block; width: 24px; height: 1.5px; background: currentColor; margin: 6px 0; }
+
+    .hero {
+      height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 8rem;
+      text-align: left; position: relative; color: #fff;
+      background: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=2200&q=85&auto=format&fit=crop') center/cover no-repeat;
+    }
+    .hero .hero-inner { position: relative; z-index: 10; padding: 0 5%; max-width: 1600px; margin: 0 auto; width: 100%; }
+    @media (min-width: 768px) { .hero { justify-content: center; padding-bottom: 0; } }
+    .hero .eyebrow { font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 1.2rem; }
+    .hero h1 { font-size: clamp(2.8rem, 8vw, 7rem); line-height: .95; letter-spacing: -0.04em; max-width: 900px; }
+    .hero .sub { margin-top: 1.5rem; font-size: .9rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.75); max-width: 500px; }
+    .hero .actions { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1.5rem; }
+    .hero .btn-primary { display: inline-flex; align-items: center; gap: .75rem; background: var(--off); color: var(--charcoal); padding: 1rem 2rem; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; transition: .5s; }
+    .hero .btn-primary:hover { background: var(--charcoal); color: var(--off); }
+    .hero .btn-outline { display: inline-flex; align-items: center; gap: .75rem; border-bottom: 1px solid rgba(255,255,255,.4); padding-bottom: .3rem; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: #fff; transition: .5s; }
+    .hero .btn-outline:hover { border-color: #fff; }
+    .scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); font-size: .65rem; letter-spacing: .22em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: .6rem; opacity: .7; }
+    .scroll .line { width: 1px; height: 48px; background: rgba(255,255,255,.25); overflow: hidden; position: relative; }
+    .scroll .line::after { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 16px; background: #fff; animation: scrollLine 1.8s ease-in-out infinite; }
+    @keyframes scrollLine { 0% { transform: translateY(-16px); } 100% { transform: translateY(48px); } }
+
+    .triad { padding: 8rem 0; background: var(--off); }
+    .triad .head { text-align: center; max-width: 900px; margin: 0 auto 1.5rem; }
+    .triad h2 { font-size: clamp(1.6rem, 3.5vw, 2.6rem); line-height: 1.3; color: var(--charcoal); }
+    .triad .line { width: 100%; height: 1px; background: rgba(28,26,23,.12); margin: 1.5rem 0 4rem; }
+    .triad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+    .triad .card { text-align: center; }
+    .triad .card .thumb { aspect-ratio: 4/3; overflow: hidden; margin-bottom: 1.2rem; }
+    .triad .card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .triad .card:hover .thumb img { transform: scale(1.05); }
+    .triad .card h3 { font-size: 1.6rem; margin-bottom: .8rem; color: var(--charcoal); }
+    .triad .card p { font-size: .95rem; line-height: 1.75; color: rgba(28,26,23,.7); }
+
+    @media (max-width: 1024px) { .triad-grid { grid-template-columns: 1fr; gap: 4rem; } }
+
+    .category {
+      min-height: 100vh; position: relative; color: #fff;
+      background-attachment: fixed; background-position: center; background-size: cover;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+    }
+    .category::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,.4); }
+    .cat-content { position: relative; z-index: 2; padding: 6rem 2rem; max-width: 720px; }
+    #residential { justify-content: flex-start; min-height: auto; }
+    #residential .cat-content { padding: 4rem 5rem 5rem; }
+    #commercial { justify-content: flex-start; min-height: auto; }
+    #commercial .cat-content { padding: 4rem 5rem 5rem; }
+    #bathrooms { justify-content: flex-start; min-height: auto; }
+    #bathrooms .cat-content { padding: 4rem 5rem 5rem; }
+    #kitchens { justify-content: flex-start; min-height: auto; }
+    #kitchens .cat-content { padding: 4rem 5rem 5rem; }
+    .category h2 { font-size: clamp(2.5rem, 7vw, 6rem); letter-spacing: .05em; margin-bottom: 1.2rem; }
+    .category p { font-size: 1.05rem; opacity: .9; max-width: 600px; margin: 0 auto; }
+    .cat-gallery { position: relative; z-index: 2; width: min(92%, 1200px); margin: 0 auto 5rem; }
+    .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .cat-grid .img { aspect-ratio: 4/3; overflow: hidden; border-radius: 4px; cursor: pointer; }
+    .cat-grid .img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .cat-grid .img:hover img { transform: scale(1.06); }
+    .cat-film { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; max-width: 1100px; margin: 0 auto; }
+    .cat-film .img { aspect-ratio: 4/3; overflow: hidden; border-radius: 12px; cursor: pointer; box-shadow: 0 20px 40px rgba(0,0,0,.2); }
+    .cat-film .img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .cat-film .img:hover img { transform: scale(1.04); }
+    .more { display: inline-block; margin-top: 2.5rem; font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; border-bottom: 1px solid currentColor; padding-bottom: .3rem; transition: .2s; }
+    .more:hover { color: var(--gold); border-color: var(--gold); }
+
+    .services { padding: 8rem 0; background: var(--white); }
+    .services .section-title { text-align: center; font-size: clamp(2.2rem, 4vw, 3.4rem); margin-bottom: .8rem; }
+    .services .section-title::after { content: ''; display: block; width: 80px; height: 1px; background: rgba(28,26,23,.15); margin: 1.2rem auto 0; }
+    .services .lead { text-align: center; color: rgba(28,26,23,.65); max-width: 700px; margin: 0 auto 4rem; }
+    .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5rem 2.5rem; }
+    .service { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(28,26,23,.1); transition: transform .4s ease; }
+    .service:hover { transform: translateY(-6px); }
+    .service .num { font-size: .65rem; letter-spacing: .2em; color: var(--gold); margin-bottom: .8rem; }
+    .service h3 { font-size: 1.5rem; margin-bottom: .6rem; color: var(--charcoal); }
+    .service p { color: rgba(28,26,23,.65); font-size: .95rem; margin: 0; line-height: 1.7; }
+
+    .about { padding: 10rem 0; background: var(--off); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .about img { width: 100%; height: 100%; object-fit: cover; min-height: 460px; border-radius: 4px; }
+    .about h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 1.5rem; }
+    .about p { color: var(--gray); margin: 0 0 1.2rem; }
+    .about .sig { margin-top: 2rem; }
+    .about .sig strong { display: block; font-size: 1.1rem; color: var(--black); }
+    .about .sig span { color: var(--gold); font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
+
+    .contact { padding: 8rem 0; background: var(--charcoal); color: #fff; }
+    .contact h2 { font-size: clamp(2rem, 4vw, 3.2rem); text-align: center; margin-bottom: .6rem; }
+    .contact .lead { text-align: center; color: rgba(255,255,255,.7); margin-bottom: 3rem; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+    .contact-info h3 { font-size: 1.2rem; margin-bottom: .4rem; }
+    .contact-info p { color: rgba(255,255,255,.7); margin: 0 0 1rem; }
+    .contact-info a { color: #fff; border-bottom: 1px solid transparent; transition: .2s; }
+    .contact-info a:hover { color: var(--gold); border-color: var(--gold); }
+    .form input, .form select, .form textarea {
+      width: 100%; padding: .9rem 1.1rem; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15);
+      color: #fff; border-radius: 4px; font-family: inherit; font-size: .95rem; margin-bottom: 1rem;
+    }
+    .form input::placeholder, .form textarea::placeholder { color: rgba(255,255,255,.5); }
+    .form input:focus, .form select:focus, .form textarea:focus { outline: none; border-color: var(--gold); }
+    .form button { background: var(--gold); color: var(--black); border: none; padding: 1rem 2.5rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: .25s; }
+    .form button:hover { background: #d4b96e; }
+
+    footer { background: var(--off); color: rgba(28,26,23,.75); padding: 5rem 0 2rem; border-top: 1px solid rgba(28,26,23,.1); }
+    footer .top { display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 3rem; }
+    footer h3 { font-size: 1.8rem; letter-spacing: -0.04em; margin-bottom: 1.5rem; color: var(--charcoal); }
+    footer h4 { color: var(--charcoal); font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 1.2rem; }
+    footer p { font-size: .9rem; margin: 0 0 .6rem; line-height: 1.7; }
+    footer a { color: rgba(28,26,23,.75); transition: .2s; }
+    footer a:hover { color: var(--charcoal); }
+    .socials { display: flex; gap: 1.5rem; margin-top: 1.5rem; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; }
+    .socials a { color: rgba(28,26,23,.55); }
+    .socials a:hover { color: var(--charcoal); }
+    .footer-nav { list-style: none; padding: 0; margin: 0; }
+    .footer-nav li { margin-bottom: .6rem; }
+    .newsletter { display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid rgba(28,26,23,.25); padding-bottom: .5rem; margin-top: 1.5rem; max-width: 420px; }
+    .newsletter input { flex: 1; background: transparent; border: none; font-family: 'Inter', sans-serif; font-size: .95rem; outline: none; color: var(--charcoal); }
+    .newsletter input::placeholder { color: rgba(28,26,23,.4); }
+    .newsletter button { background: none; border: none; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--charcoal); cursor: pointer; }
+    .bottom { border-top: 1px solid rgba(28,26,23,.1); margin-top: 4rem; padding-top: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(28,26,23,.5); }
+
+    .mobile-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--white); display: none; gap: 1px; box-shadow: 0 -4px 20px rgba(0,0,0,.1); }
+    .mobile-bar a { flex: 1; padding: .9rem; text-align: center; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--black); }
+    .mobile-bar a:first-child { background: var(--gold); color: var(--black); }
+    .whatsapp { position: fixed; bottom: 24px; right: 24px; z-index: 1001; width: 56px; height: 56px; border-radius: 50%; background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,.2); transition: .3s; }
+    .whatsapp:hover { transform: scale(1.08); }
+    .whatsapp svg { width: 28px; height: 28px; }
+    @media (max-width: 768px) { .whatsapp { bottom: 80px; } }
+
+    @media (max-width: 1024px) {
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      header { padding: 1.2rem 1.5rem; }
+      .menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); color: var(--black); flex-direction: column; padding: 2rem; gap: 1.5rem; }
+      .menu.open { display: flex; }
+      .menu-toggle { display: block; }
+      .category { background-attachment: scroll; min-height: auto; }
+      .cat-content { padding: 5rem 1.5rem; }
+      .cat-grid, .service-grid { grid-template-columns: 1fr; }
+      .about-grid, .contact-grid, footer .top { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about img { min-height: 320px; }
+      .mobile-bar { display: flex; }
+      body { padding-bottom: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <div class="header-inner">
+    <a href="#home" class="logo">Renovate Max2Max<span class="dot">.</span></a>
+    <button class="menu-toggle" id="toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="menu" id="menu">
+      <a href="#home">Home</a>
+      <a href="#philosophy">Philosophy</a>
+      <a href="#residential">Residential</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" style="border-bottom:1px solid currentColor; padding-bottom:.2rem;">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <p class="eyebrow">Tile &amp; Flooring · Residential &amp; Commercial</p>
+    <h1>We design spaces<br>that feel timeless.</h1>
+    <p class="sub">Tile Installation · Bathroom Upgrades · Kitchen Backsplash · Custom Showers</p>
+    <div class="actions">
+      <a href="#projects" class="btn-primary">Explore Projects <span style="font-size:1.1rem;">→</span></a>
+      <a href="#contact" class="btn-outline">Start a Conversation <span style="font-size:1.1rem;">→</span></a>
+    </div>
+  </div>
+  <a href="#philosophy" class="scroll">
+    <span>Scroll to explore</span>
+    <span class="line"></span>
+  </a>
+</section>
+
+<section class="triad" id="philosophy">
+  <div class="container">
+    <div class="head reveal">
+      <h2>Good Design Yearns For Boundless Style That Is Underlined By Simplicity</h2>
+      <div class="line"></div>
+    </div>
+    <div class="triad-grid">
+      <article class="card reveal">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80&auto=format&fit=crop" alt="Luxury residential living room" loading="lazy" decoding="async">
+        </div>
+        <h3>Residential</h3>
+        <p>Every home has its own rhythm. We craft bathrooms, kitchens, showers and floors with care — balancing the clean lines of modern design with the practical demands of daily life. The result is a space that feels refined, personal and built to last.</p>
+      </article>
+      <article class="card reveal">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1770993151375-0dee97eda931?w=900&q=80&auto=format&fit=crop" alt="Modern commercial workspace" loading="lazy" decoding="async">
+        </div>
+        <h3>Commercial</h3>
+        <p>Offices, retail spaces and workplaces need finishes that communicate quality and withstand heavy use. Our tile and flooring work is tailored to reflect your brand while creating an environment that is polished, durable and effortlessly functional.</p>
+      </article>
+      <article class="card reveal">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1761515397055-1bba63a150d3?w=900&q=80&auto=format&fit=crop" alt="Hospitality dining and lounge space" loading="lazy" decoding="async">
+        </div>
+        <h3>Hospitality</h3>
+        <p>Hotels, restaurants and public spaces must make a strong first impression and survive years of traffic. We deliver premium tile installation and waterproofing with exacting detail, so every surface performs as beautifully as it looks.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="category" id="residential" style="background-image:url('https://images.unsplash.com/photo-1743921341473-7c258f4d6ea6?auto=format&fit=crop&w=1920&q=80');">
+  <div class="cat-content">
+    <p class="eyebrow">Residential</p>
+    <h2>Residential</h2>
+    <p class="reveal">Where life unfolds. We approach each home with the belief that finishes should be both beautiful and livable — custom showers that feel like a retreat, backsplashes that catch the morning light, and floors that carry a family through every season.</p>
+  </div>
+
+</section>
+
+<section class="triad" id="work">
+  <div class="container">
+    <div class="head reveal">
+      <h2>Selected Work</h2>
+      <div class="line"></div>
+    </div>
+    <div class="triad-grid">
+      <article class="card reveal">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1772476361253-90a9be5e0c19?w=900&q=80&auto=format&fit=crop" alt="Modern bathroom" loading="lazy" decoding="async">
+        </div>
+        <h3>Modern Bathroom</h3>
+        <p>Custom shower enclosure with clean tile lines and glass detailing.</p>
+      </article>
+      <article class="card reveal">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1758915753369-6a33c7bc1d76?w=900&q=80&auto=format&fit=crop" alt="Living room interior" loading="lazy" decoding="async">
+        </div>
+        <h3>Warm Living Space</h3>
+        <p>Tiled flooring and soft finishes that make a house feel like home.</p>
+      </article>
+      <article class="card reveal">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1762544968153-b9b47435fefd?w=900&q=80&auto=format&fit=crop" alt="Fireplace interior" loading="lazy" decoding="async">
+        </div>
+        <h3>Fireplace Feature</h3>
+        <p>A tiled fireplace surround as a quiet, refined focal point.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="category" id="commercial" style="background-image:url('https://images.unsplash.com/photo-1773061696034-97a41cce1761?auto=format&fit=crop&w=1920&q=80');">
+  <div class="cat-content">
+    <p class="eyebrow">Commercial</p>
+    <h2>Commercial</h2>
+    <p class="reveal">First impressions are built at the ground level. We deliver commercial tile and flooring solutions that reflect your brand, support heavy footfall, and maintain a clean, professional finish across offices, retail and public spaces.</p>
+  </div>
+  </section>
+
+  <section class="triad" id="work-commercial">
+    <div class="container">
+      <div class="head reveal">
+        <h2>Selected Work</h2>
+        <div class="line"></div>
+      </div>
+      <div class="triad-grid">
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1773867567872-3ad1fa481082?w=900&q=80&auto=format&fit=crop" alt="Modern office lounge" loading="lazy" decoding="async">
+          </div>
+          <h3>Office Lounge</h3>
+          <p>A tiled office reception built for first impressions and heavy daily use.</p>
+        </article>
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1765556556784-7656ee0a1bd8?w=900&q=80&auto=format&fit=crop" alt="Textured floor tiles" loading="lazy" decoding="async">
+          </div>
+          <h3>Textured Flooring</h3>
+          <p>Large-format flooring with subtle texture and clean grout lines.</p>
+        </article>
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1773736148755-a1f80cf9ecd8?w=900&q=80&auto=format&fit=crop" alt="Geometric commercial flooring" loading="lazy" decoding="async">
+          </div>
+          <h3>Geometric Floor</h3>
+          <p>Patterned commercial tiles arranged with precision for visual rhythm.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="category" id="bathrooms" style="background-image:url('https://images.unsplash.com/photo-1763485956343-61b0163a3e7e?auto=format&fit=crop&w=1920&q=80');">
+  <div class="cat-content">
+    <p class="eyebrow">Bathrooms &amp; Showers</p>
+    <h2>Bathrooms</h2>
+    <p class="reveal">A bathroom should feel like a sanctuary and function like a machine. We build custom showers, lay waterproofing with precision, and finish every tile with an eye for detail so the space stays beautiful through years of steam and use.</p>
+  </div>
+  </section>
+
+  <section class="triad" id="work-bathrooms">
+    <div class="container">
+      <div class="head reveal">
+        <h2>Selected Work</h2>
+        <div class="line"></div>
+      </div>
+      <div class="triad-grid">
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1723257891127-0d1ea314a720?w=900&q=80&auto=format&fit=crop" alt="White tiled shower" loading="lazy" decoding="async">
+          </div>
+          <h3>White Tiled Shower</h3>
+          <p>A clean, bright shower surround with precise grout lines and built-in shelving.</p>
+        </article>
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1721743138130-e8ce6e1a7dce?w=900&q=80&auto=format&fit=crop" alt="Shower with glass door" loading="lazy" decoding="async">
+          </div>
+          <h3>Glass Enclosure</h3>
+          <p>Frameless glass with neutral tile for a spacious, spa-like shower.</p>
+        </article>
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1763485956293-873ea83bf095?w=900&q=80&auto=format&fit=crop" alt="Modern bathroom" loading="lazy" decoding="async">
+          </div>
+          <h3>Modern Bathroom</h3>
+          <p>Full bathroom tile layout combining floor, wall and feature finishes.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="category" id="kitchens" style="background-image:url('https://images.unsplash.com/photo-1774429145093-3e813eedcd7a?auto=format&fit=crop&w=1920&q=80');">
+  <div class="cat-content">
+    <p class="eyebrow">Kitchens &amp; Backsplashes</p>
+    <h2>Kitchens</h2>
+    <p class="reveal">The kitchen is the heart of the home, and the backsplash is its signature. We design and install tile backsplashes that balance warmth, texture and practicality, creating a focal point that works alongside prep, cooking and conversation.</p>
+  </div>
+  </section>
+
+  <section class="triad" id="work-kitchens">
+    <div class="container">
+      <div class="head reveal">
+        <h2>Selected Work</h2>
+        <div class="line"></div>
+      </div>
+      <div class="triad-grid">
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1755624222023-621f7718950b?w=900&q=80&auto=format&fit=crop" alt="Green subway tile backsplash" loading="lazy" decoding="async">
+          </div>
+          <h3>Subway Backsplash</h3>
+          <p>A fresh green subway tile backsplash that adds colour without overpowering the kitchen.</p>
+        </article>
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1723639904954-2f0d757194fd?w=900&q=80&auto=format&fit=crop" alt="Wooden kitchen with tile" loading="lazy" decoding="async">
+          </div>
+          <h3>Warm Kitchen</h3>
+          <p>Timber and tile combined for a balanced, welcoming cooking space.</p>
+        </article>
+        <article class="card reveal">
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1765371515651-faa86f08f0ae?w=900&q=80&auto=format&fit=crop" alt="Marble backsplash kitchen" loading="lazy" decoding="async">
+          </div>
+          <h3>Marble Backsplash</h3>
+          <p>Marble-look tile backsplash that brings quiet luxury behind the range.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services">
+  <div class="container">
+    <p class="eyebrow reveal" style="text-align:center;">What We Do</p>
+    <h2 class="section-title reveal">Our Services</h2>
+    <p class="lead reveal">From carefully laid floors to precisely cut edges, every service is delivered with the discipline of a craftsman and the care of someone who treats your space as their own.</p>
+    <div class="service-grid">
+      <div class="service reveal">
+        <p class="num">01</p>
+        <h3>Tile &amp; Flooring</h3>
+        <p>We install porcelain, ceramic and stone tiles with clean grout lines, level surfaces and finishes that feel solid underfoot for years.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">02</p>
+        <h3>Bathroom Upgrades</h3>
+        <p>Complete bathroom transformations — new tile walls, floors, fixtures and waterproofing that turn an ordinary room into a calm, durable retreat.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">03</p>
+        <h3>Custom Showers</h3>
+        <p>Built from the waterproofing layer up, with custom tile layouts, niche details and mitered edges that look as good as they perform.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">04</p>
+        <h3>Kitchen Backsplash</h3>
+        <p>Backsplashes that frame the kitchen with texture and colour, installed with precision around outlets, corners and cabinets.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">05</p>
+        <h3>Waterproofing</h3>
+        <p>Solid waterproofing for showers, bathrooms and wet areas so the beauty on the surface is backed by protection underneath.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">06</p>
+        <h3>Fireplace Tile</h3>
+        <p>A tiled fireplace becomes the room’s anchor. We handle layout, heat-safe materials and crisp edges for a refined focal point.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">07</p>
+        <h3>45&deg; Mitered Finishes</h3>
+        <p>Premium 45-degree tile cuts and mitered edges that create clean corners, seamless steps and a custom, high-end look.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">08</p>
+        <h3>Home Repairs</h3>
+        <p>Thoughtful repairs and improvements that bring older rooms back to life without cutting corners on quality or finish.</p>
+      </div>
+      <div class="service reveal">
+        <p class="num">09</p>
+        <h3>Appliance Installation</h3>
+        <p>Professional installation support for appliances during your renovation, ensuring everything fits, sits level and functions safely.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="reveal">
+        <img src="https://images.unsplash.com/photo-1747729495628-e38c438f619b?auto=format&fit=crop&w=1200&q=80" alt="Tile installer at work" loading="lazy" decoding="async">
+      </div>
+      <div class="reveal">
+        <p class="eyebrow">About Us</p>
+        <h2>Built on Precision, Led by Care</h2>
+        <p>Renovate Max2Max Inc. is an Edmonton-based tile and renovation company founded on the belief that the smallest details shape the biggest impressions. From a single backsplash to a full home renovation, we treat every surface, corner and cutline as a reflection of our commitment to the craft.</p>
+        <p>Led by Gurdeep Singh, our team brings precision, patience and pride to every residential and commercial project across Edmonton and the surrounding area. We listen first, plan carefully, and finish with a level of care that makes the work last.</p>
+        <div class="sig">
+          <strong>Gurdeep Singh</strong>
+          <span>Renovate Max2Max Inc.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="container">
+    <p class="eyebrow reveal" style="text-align:center;">Get in Touch</p>
+    <h2 class="reveal">Start the Conversation</h2>
+    <p class="lead reveal">Tell us what you are planning. We will help you choose materials, map the scope and deliver a finish that is precise, durable and worth looking at for years.</p>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <h3>Renovate Max2Max Inc.</h3>
+        <p>Edmonton, Alberta, Canada</p>
+        <p><a href="tel:+14378698609">+1 (437) 869-8609</a></p>
+        <p><a href="mailto:Renovatemax2max@gmail.com">Renovatemax2max@gmail.com</a></p>
+        <p>Service Area: Edmonton and surrounding areas</p>
+      </div>
+      <form class="form reveal" id="quoteForm">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="tel" name="phone" placeholder="Phone number" required>
+        <input type="email" name="email" placeholder="Email address">
+        <select name="type" required>
+          <option value="" disabled selected>Project Type</option>
+          <option value="Bathroom">Bathroom</option>
+          <option value="Shower">Shower</option>
+          <option value="Flooring">Flooring</option>
+          <option value="Kitchen Backsplash">Kitchen Backsplash</option>
+          <option value="Fireplace">Fireplace</option>
+          <option value="Waterproofing">Waterproofing</option>
+          <option value="Home Repair">Home Repair</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Other">Other</option>
+        </select>
+        <textarea name="details" rows="4" placeholder="Tell us a little about your project..."></textarea>
+        <button type="submit">Request a Free Quote</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="top">
+      <div>
+        <h3>Renovate Max2Max.</h3>
+        <p style="max-width:320px;">A tile and renovation studio serving Edmonton and the surrounding area — crafting durable, beautiful floors, bathrooms, kitchens and feature work for homes and businesses.</p>
+        <div class="socials">
+          <a href="https://instagram.com/" target="_blank" rel="noreferrer" class="link-underline">Instagram</a>
+          <a href="https://pinterest.com/" target="_blank" rel="noreferrer" class="link-underline">Pinterest</a>
+          <a href="https://linkedin.com/" target="_blank" rel="noreferrer" class="link-underline">LinkedIn</a>
+        </div>
+      </div>
+      <div>
+        <h4>Navigate</h4>
+        <ul class="footer-nav">
+          <li><a href="#home" class="link-underline">Home</a></li>
+          <li><a href="#about" class="link-underline">About</a></li>
+          <li><a href="#services" class="link-underline">Services</a></li>
+          <li><a href="#contact" class="link-underline">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Studio</h4>
+        <p>Renovate Max2Max Inc.<br>Edmonton, Alberta<br>Canada</p>
+        <p style="margin-top:1rem;"><a href="tel:+14378698609" class="link-underline">+1 (437) 869 8609</a><br><a href="mailto:Renovatemax2max@gmail.com" class="link-underline">Renovatemax2max@gmail.com</a></p>
+        <p style="font-size:.75rem; color:rgba(28,26,23,.5); margin-top:.75rem;">Monday — Friday · 10:00 — 18:30</p>
+      </div>
+    </div>
+
+    <div style="margin-top:4rem; padding-top:2.5rem; border-top:1px solid rgba(28,26,23,.1);">
+      <p style="font-family:'Cormorant Garamond', serif; font-size:1.6rem; color:var(--charcoal);">Design notes, occasionally.</p>
+      <form class="newsletter" onsubmit="event.preventDefault(); alert('Thank you — we will be in touch.');">
+        <input type="email" placeholder="Your email" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+
+    <div class="bottom">
+      <p>&copy; 2026 Renovate Max2Max</p>
+      <div style="display:flex; gap:1.5rem;">
+        <a href="#" class="link-underline">Privacy Policy</a>
+        <a href="#" class="link-underline">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="mobile-bar">
+  <a href="tel:+14378698609">Call Now</a>
+  <a href="#contact">Get a Quote</a>
+</div>
+
+<script>
+(function(){
+  const header = document.getElementById('header');
+  const toggle = document.getElementById('toggle');
+  const menu = document.getElementById('menu');
+  const reveals = document.querySelectorAll('.reveal');
+  const quoteForm = document.getElementById('quoteForm');
+
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  toggle.addEventListener('click', () => menu.classList.toggle('open'));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: .15 });
+  reveals.forEach(el => io.observe(el));
+
+  if(quoteForm){
+    quoteForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const f = quoteForm;
+      const name = f.name.value.trim();
+      const phone = f.phone.value.trim();
+      const email = f.email.value.trim();
+      const type = f.type.value;
+      const details = f.details.value.trim();
+      if(!name || !phone){ alert('Please enter your name and phone number.'); return; }
+      const body = `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nProject Type: ${type}\nProject Details: ${details}`;
+      window.location.href = `mailto:Renovatemax2max@gmail.com?subject=Quote Request&body=${encodeURIComponent(body)}`;
+      quoteForm.reset();
+    });
+  }
+})();
+</script>
+
+<a href="https://wa.me/14378698609" target="_blank" rel="noreferrer" class="whatsapp" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.472 3.516A10.918 10.918 0 0 0 12.002 0C5.374 0 .008 5.364.008 11.998c0 2.11.55 4.17 1.594 5.99L0 24l6.252-1.59A11.92 11.92 0 0 0 12 24c6.626 0 11.992-5.364 11.992-11.998a11.88 11.88 0 0 0-3.52-8.486zM12 21.75a9.69 9.69 0 0 1-4.956-1.36l-.356-.213-3.744.952.998-3.648-.26-.41A9.694 9.694 0 0 1 2.25 11.998c0-5.385 4.366-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75zm5.612-7.988c-.304-.152-1.8-.888-2.08-1.008-.28-.116-.484-.174-.688.176-.204.35-.788 1.008-.964 1.146-.18.14-.356.158-.66.006-.304-.154-1.28-.47-2.44-1.502-.9-.806-1.51-1.798-1.688-2.102-.176-.304-.018-.468.132-.62.136-.136.304-.352.456-.528.152-.176.204-.304.304-.504.102-.204.05-.38-.024-.528-.076-.152-.688-1.658-.944-2.27-.25-.596-.502-.514-.688-.522-.18-.01-.384-.012-.588-.012-.204 0-.536.076-.816.38-.28.306-1.072 1.048-1.072 2.558 0 1.51 1.1 2.97 1.252 3.174.152.204 2.168 3.31 5.256 4.64 2.052.846 2.856.92 3.368.79.54-.142.988-.55 1.124-1.06.14-.512.14-.952.1-1.06-.04-.108-.148-.17-.348-.266z"/></svg>
+</a>
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+/* Contact Page — clean, premium, conversion-focused */
+
+.contact-page {
+  color: var(--charcoal);
+  background: var(--off);
+}
+
+.ct-hero {
+  min-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  text-align: left;
+  position: relative;
+  color: #fff;
+  background: url('/images/md-contact.jpg') center/cover no-repeat;
+  padding: 6rem 5%;
+}
+@media (max-width: 768px) { .ct-hero { min-height: 50vh; padding: 5rem 5%; } }
+.ct-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(28,26,23,.5);
+}
+.ct-hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  width: 100%;
+}
+.ct-hero .eyebrow {
+  font-size: .7rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.7);
+  margin-bottom: 1.2rem;
+}
+.ct-hero h1 {
+  font-size: clamp(2.2rem, 6vw, 5rem);
+  line-height: .95;
+  letter-spacing: -0.04em;
+  margin-bottom: 1rem;
+}
+.ct-hero p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,.85);
+  max-width: 600px;
+  margin: 0;
+}
+
+.ct-main {
+  padding: 8rem 0;
+  background: var(--off);
+}
+.ct-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 5rem;
+  align-items: start;
+}
+.ct-info h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  margin-bottom: 2rem;
+  color: var(--charcoal);
+}
+.ct-info h3 {
+  font-size: 1.2rem;
+  margin: 0 0 .4rem;
+  color: var(--charcoal);
+}
+.ct-info p, .ct-info a {
+  font-size: .95rem;
+  color: rgba(28,26,23,.7);
+  margin: 0 0 1.2rem;
+  display: block;
+}
+.ct-info a {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: .2s;
+}
+.ct-info a:hover {
+  color: var(--gold);
+  border-bottom: 1px solid currentColor;
+}
+.ct-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.ct-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 1px solid rgba(28,26,23,.2);
+  padding: .85rem 1.5rem;
+  font-size: .7rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  transition: .25s;
+}
+.ct-actions a:hover {
+  background: var(--charcoal);
+  color: var(--off);
+  border-color: var(--charcoal);
+}
+
+.ct-form {
+  background: var(--white);
+  padding: 2.5rem;
+  border: 1px solid rgba(28,26,23,.08);
+}
+.ct-form label {
+  display: block;
+  font-size: .65rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(28,26,23,.6);
+  margin-bottom: .5rem;
+}
+.ct-form label .req { color: var(--gold); }
+.ct-form input,
+.ct-form select,
+.ct-form textarea {
+  width: 100%;
+  padding: .9rem 1rem;
+  background: rgba(28,26,23,.03);
+  border: 1px solid rgba(28,26,23,.1);
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: .95rem;
+  color: var(--charcoal);
+  margin-bottom: 1.2rem;
+  outline: none;
+  transition: .2s;
+}
+.ct-form input:focus,
+.ct-form select:focus,
+.ct-form textarea:focus {
+  border-color: var(--gold);
+}
+.ct-form input::placeholder,
+.ct-form textarea::placeholder {
+  color: rgba(28,26,23,.4);
+}
+.ct-form .error {
+  border-color: #c44;
+  background: rgba(204,68,68,.04);
+}
+.ct-form .error-msg {
+  color: #c44;
+  font-size: .8rem;
+  margin-top: -.8rem;
+  margin-bottom: 1rem;
+}
+.ct-form button {
+  background: var(--charcoal);
+  color: var(--off);
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: .7rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: .25s;
+  width: 100%;
+}
+.ct-form button:hover:not(:disabled) {
+  background: var(--gold);
+  color: var(--charcoal);
+}
+.ct-form button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+.ct-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  font-size: .9rem;
+  border-radius: 4px;
+  display: none;
+}
+.ct-message.success {
+  display: block;
+  background: rgba(191,163,95,.12);
+  color: #5a4a28;
+  border: 1px solid rgba(191,163,95,.3);
+}
+.ct-message.error {
+  display: block;
+  background: rgba(204,68,68,.08);
+  color: #c44;
+  border: 1px solid rgba(204,68,68,.2);
+}
+
+.ct-links {
+  padding: 6rem 0;
+  background: var(--white);
+  border-top: 1px solid rgba(28,26,23,.08);
+  border-bottom: 1px solid rgba(28,26,23,.08);
+}
+.ct-links .head {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.ct-links h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: var(--charcoal);
+}
+.ct-links-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.ct-links a {
+  display: inline-block;
+  padding: .75rem 1.25rem;
+  border: 1px solid rgba(28,26,23,.12);
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  transition: .25s;
+}
+.ct-links a:hover {
+  background: var(--charcoal);
+  color: var(--off);
+  border-color: var(--charcoal);
+}
+
+.ct-location {
+  padding: 6rem 0;
+  text-align: center;
+  background: var(--off);
+}
+.ct-location h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: var(--charcoal);
+  margin-bottom: 1rem;
+}
+.ct-location p {
+  font-size: 1rem;
+  color: rgba(28,26,23,.65);
+  margin: 0;
+}
+
+.ct-cta {
+  padding: 8rem 0;
+  background: var(--charcoal);
+  color: #fff;
+  text-align: center;
+}
+.ct-cta h2 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  margin-bottom: 1rem;
+}
+.ct-cta p {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,.7);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+}
+.ct-cta .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+  background: var(--off);
+  color: var(--charcoal);
+  padding: 1rem 2rem;
+  font-size: .7rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  transition: .5s;
+}
+.ct-cta .btn-primary:hover {
+  background: var(--gold);
+}
+
+.ct-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.ct-reveal.ct-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 1024px) {
+  .ct-main-grid {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ct-hero { min-height: 50vh; padding: 5rem 5%; }
+  .ct-hero h1 { font-size: clamp(2rem, 10vw, 3.5rem); }
+  .ct-main,
+  .ct-cta { padding: 5rem 0; }
+  .ct-form { padding: 1.5rem; }
+  .ct-info a { word-break: break-all; }
+}
