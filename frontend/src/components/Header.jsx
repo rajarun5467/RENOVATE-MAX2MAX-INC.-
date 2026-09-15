@@ -32,7 +32,7 @@ export default function Header() {
   return (
     <div dangerouslySetInnerHTML={{ __html: `<header id="header">
   <div class="header-inner">
-    <a href="#/" class="logo">Renovate Max2Max<span class="dot">.</span></a>
+    <a href="#/" class="logo"><img src="/images/logo.png" alt="Renovate Max2Max" class="logo-img"></a>
     <button class="menu-toggle" id="toggle" aria-label="Menu"><span></span><span></span><span></span></button>
     <nav class="menu" id="menu">
       <a href="#/">Home</a>

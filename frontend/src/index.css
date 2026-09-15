@@ -33,22 +33,23 @@
       color: #fff; transition: .5s ease;
     }
     header .header-inner {
-      max-width: 1600px; margin: 0 auto; padding: 1.25rem 5%;
+      max-width: 1600px; margin: 0 auto; padding: .75rem 5%;
       display: flex; justify-content: space-between; align-items: center;
     }
     header.scrolled { background: rgba(246,242,236,.95); backdrop-filter: blur(12px); color: var(--charcoal); border-bottom: 1px solid rgba(28,26,23,.08); box-shadow: 0 4px 20px rgba(0,0,0,.08); }
-    .logo { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.6rem; letter-spacing: -0.04em; transition: color .5s ease; }
-    .logo .dot { color: var(--gold); }
+    .logo { display: flex; align-items: center; transition: color .5s ease; }
+    .logo img { height: 64px; width: auto; display: block; }
+    header:not(.scrolled) .logo img { filter: drop-shadow(0 0 3px rgba(255,255,255,.7)); }
     .menu { display: flex; flex: 1; gap: 2.5rem; align-items: center; margin-left: 2.5rem; justify-content: flex-end; }
     .menu a { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; opacity: .85; transition: .2s; }
     .menu a:hover { opacity: 1; color: var(--gold); }
     .menu a[href^="tel:"] { color: var(--gold); }
     .menu-toggle { display: none; background: none; border: none; color: inherit; cursor: pointer; }
     .menu-toggle span { display: block; width: 24px; height: 1.5px; background: currentColor; margin: 6px 0; }
-    header.scrolled .header-inner { padding: 1rem 5%; }
+    header.scrolled .header-inner { padding: .6rem 5%; }
     header.scrolled .menu a { color: var(--charcoal); opacity: .9; }
     header.scrolled .menu a:hover { color: var(--charcoal); opacity: 1; border-bottom: 1px solid currentColor; padding-bottom: .2rem; }
-    header.scrolled .logo { color: var(--charcoal); }
+
 
     .hero {
       height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 8rem;
@@ -81,6 +82,9 @@
     .triad .card:hover .thumb img { transform: scale(1.05); }
     .triad .card h3 { font-size: 1.6rem; margin-bottom: .8rem; color: var(--charcoal); }
     .triad .card p { font-size: .95rem; line-height: 1.75; color: rgba(28,26,23,.7); }
+
+    #philosophy { padding: 4rem 0; }
+    #philosophy .head { margin-bottom: 1rem; }
 
     @media (max-width: 1024px) { .triad-grid { grid-template-columns: 1fr; gap: 4rem; } }
 
@@ -182,8 +186,8 @@
     @media (max-width: 768px) { .whatsapp { bottom: 80px; } }
 
     @media (max-width: 1024px) {
-      .header-inner { padding: 1.2rem 4%; }
-      .logo { font-size: 1.4rem; }
+      .header-inner { padding: .7rem 4%; }
+      .logo img { height: 52px; }
       .menu { gap: 1.5rem; }
       .menu a { font-size: .75rem; }
       .hero h1 { font-size: clamp(2.4rem, 7vw, 5rem); }
@@ -194,7 +198,7 @@
       .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     }
     @media (max-width: 768px) {
-      header { padding: 1.2rem 1.5rem; }
+      header .header-inner { padding: .7rem 1.5rem; }
       .menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); color: var(--black); flex-direction: column; padding: 2rem; gap: 1.5rem; }
       .menu.open { display: flex; }
       .menu-toggle { display: block; }
