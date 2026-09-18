@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import Home from './pages/Home.jsx';
@@ -7,11 +7,14 @@ import Residential from './pages/Residential.jsx';
 import Services from './pages/Services.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
+import Admin from './pages/Admin.jsx';
 
-function App() {
+function Layout() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
   return (
-    <HashRouter>
-      <Header />
+    <>
+      {!isAdmin && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/philosophy" element={<Philosophy />} />
@@ -19,8 +22,17 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
-      <Footer />
+      {!isAdmin && <Footer />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <HashRouter>
+      <Layout />
     </HashRouter>
   );
 }

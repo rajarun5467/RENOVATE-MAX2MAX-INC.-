@@ -2,6 +2,8 @@ node_modules/
 dist/
 .env
 .env.*
+!.env.example
+backend/data/
 *.log
 .DS_Store
 Thumbs.db
