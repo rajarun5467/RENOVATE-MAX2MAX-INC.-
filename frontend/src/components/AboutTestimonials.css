@@ -1,0 +1,289 @@
+/* About Testimonials — premium editorial slider */
+
+.abt-testimonials {
+  padding: 8rem 0;
+  background: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.abt-testimonials::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: rgba(28,26,23,.06);
+}
+
+/* Header */
+.abt-test-head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 4rem;
+}
+.abt-test-label {
+  font-size: .68rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.abt-test-head h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--charcoal);
+  margin: 0 0 1.2rem;
+  line-height: 1.1;
+}
+.abt-test-line {
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 auto 1.5rem;
+}
+.abt-test-sub {
+  font-size: 1rem;
+  color: rgba(28,26,23,.55);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Slider */
+.abt-test-slider-wrap {
+  overflow: hidden;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+.abt-test-track {
+  display: flex;
+  transition: transform .7s cubic-bezier(.4, 0, .2, 1);
+  will-change: transform;
+}
+
+/* Card */
+.abt-test-card {
+  padding: 0 .75rem;
+  box-sizing: border-box;
+  opacity: .35;
+  transition: opacity .5s ease;
+}
+.abt-test-card.active {
+  opacity: 1;
+}
+.abt-test-card-inner {
+  background: var(--off);
+  border: 1px solid rgba(28,26,23,.08);
+  padding: 3rem 2.5rem 2.5rem;
+  position: relative;
+  height: 100%;
+  transition: transform .4s ease, box-shadow .4s ease, border-color .4s ease;
+}
+.abt-test-card.active .abt-test-card-inner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(28,26,23,.08);
+  border-color: rgba(191,163,95,.3);
+}
+
+/* Quote mark */
+.abt-test-quote {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 6rem;
+  line-height: 1;
+  color: var(--gold);
+  opacity: .18;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity .4s ease, transform .4s ease;
+}
+.abt-test-card.active .abt-test-card-inner:hover .abt-test-quote {
+  opacity: .3;
+  transform: scale(1.05);
+}
+
+/* Stars */
+.abt-test-stars {
+  display: flex;
+  gap: .15rem;
+  margin-bottom: 1.25rem;
+}
+.abt-test-stars span {
+  font-size: .85rem;
+  color: rgba(28,26,23,.15);
+  transition: color .3s ease;
+}
+.abt-test-stars span.filled {
+  color: var(--gold);
+}
+
+/* Text */
+.abt-test-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: rgba(28,26,23,.78);
+  font-style: italic;
+  margin: 0 0 1.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Divider */
+.abt-test-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(28,26,23,.15);
+  margin-bottom: 1.25rem;
+}
+
+/* Author */
+.abt-test-author {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+}
+.abt-test-author img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--white);
+  transition: transform .4s ease;
+}
+.abt-test-card.active .abt-test-card-inner:hover .abt-test-author img {
+  transform: scale(1.05);
+}
+.abt-test-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--charcoal);
+  color: var(--off);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.abt-test-meta strong {
+  display: block;
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  letter-spacing: -.01em;
+}
+.abt-test-meta span {
+  display: block;
+  font-size: .78rem;
+  color: rgba(28,26,23,.5);
+  margin-top: .15rem;
+}
+
+/* Navigation */
+.abt-test-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3.5rem;
+}
+.abt-test-arrow {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(28,26,23,.15);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--charcoal);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .3s ease;
+  flex-shrink: 0;
+}
+.abt-test-arrow:hover:not(:disabled) {
+  background: var(--charcoal);
+  color: var(--off);
+  border-color: var(--charcoal);
+}
+.abt-test-arrow:disabled {
+  opacity: .25;
+  cursor: not-allowed;
+}
+.abt-test-arrow:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* Dots */
+.abt-test-dots {
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+}
+.abt-test-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(28,26,23,.15);
+  cursor: pointer;
+  padding: 0;
+  transition: all .3s ease;
+}
+.abt-test-dot:hover {
+  background: rgba(28,26,23,.35);
+}
+.abt-test-dot.active {
+  width: 28px;
+  border-radius: 4px;
+  background: var(--gold);
+}
+.abt-test-dot:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* Reveal animation */
+.abt-test-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.abt-test-reveal.abt-test-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .abt-testimonials { padding: 6rem 0; }
+  .abt-test-card-inner { padding: 2.5rem 2rem 2rem; }
+  .abt-test-quote { font-size: 5rem; top: 1rem; right: 1.5rem; }
+}
+
+@media (max-width: 768px) {
+  .abt-testimonials { padding: 5rem 0; }
+  .abt-test-head { margin-bottom: 3rem; }
+  .abt-test-head h2 { font-size: clamp(1.8rem, 6vw, 2.5rem); }
+  .abt-test-slider-wrap { margin: 0 -.5rem; padding: 0 .5rem; }
+  .abt-test-card { padding: 0 .25rem; }
+  .abt-test-card-inner { padding: 2.5rem 1.75rem 2rem; }
+  .abt-test-text { font-size: 1.05rem; }
+  .abt-test-quote { font-size: 4.5rem; top: .75rem; right: 1.25rem; }
+  .abt-test-nav { gap: 1.5rem; margin-top: 2.5rem; }
+  .abt-test-arrow { width: 42px; height: 42px; }
+}
+
+@media (max-width: 480px) {
+  .abt-test-card-inner { padding: 2rem 1.5rem 1.75rem; }
+  .abt-test-quote { font-size: 4rem; }
+  .abt-test-text { font-size: 1rem; line-height: 1.65; }
+}

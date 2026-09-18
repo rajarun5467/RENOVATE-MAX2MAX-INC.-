@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import AboutTestimonials from '../components/AboutTestimonials.jsx';
 import './About.css';
 
 export default function About() {
@@ -133,6 +134,8 @@ export default function About() {
         </div>
       </div>
     </section>
+
+    <AboutTestimonials />
 
     <section class="abt-cta">
       <div class="container abt-reveal">
