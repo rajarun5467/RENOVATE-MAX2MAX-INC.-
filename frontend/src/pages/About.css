@@ -52,7 +52,7 @@
 }
 
 .abt-who {
-  padding: 8rem 0;
+  padding: 4rem 0;
   background: var(--off);
 }
 .abt-who-grid {
@@ -83,7 +83,7 @@
 }
 
 .abt-founder {
-  padding: 8rem 0;
+  padding: 4rem 0;
   background: var(--white);
 }
 .abt-founder-grid {
@@ -180,7 +180,7 @@
 }
 
 .abt-areas {
-  padding: 8rem 0;
+  padding: 4rem 0;
   background: var(--white);
 }
 .abt-areas .head {
@@ -260,7 +260,7 @@
 }
 
 .abt-approach {
-  padding: 8rem 0;
+  padding: 4rem 0;
   background: var(--off);
 }
 .abt-approach .head {
@@ -311,7 +311,7 @@
 }
 
 .abt-cta {
-  padding: 8rem 0;
+  padding: 4rem 0;
   background: var(--charcoal);
   color: #fff;
   text-align: center;
@@ -405,3 +405,4 @@
   .abt-who img,
   .abt-founder img { min-height: 320px; }
 }
+
