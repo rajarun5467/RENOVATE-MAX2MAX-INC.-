@@ -64,8 +64,6 @@ const NAV = [
     { id: 'activity', label: 'Activity Logs', icon: '⏱' },
   ]},
   { group: 'System', items: [
-    { id: 'media', label: 'Media Library', icon: '☵' },
-    { id: 'seo', label: 'SEO', icon: '⌕' },
     { id: 'settings', label: 'Settings', icon: '⚙' },
     { id: 'users', label: 'Users', icon: '☻' },
   ]},
@@ -1346,7 +1344,7 @@ export default function Admin() {
     </ConfirmProvider></ToastProvider>
   );
 
-  const pages = { dashboard: Dashboard, enquiries: Enquiries, 'website-images': WebsiteImages, services: Services, projects: Projects, testimonials: Testimonials, gallery: Gallery, media: Media, seo: SEO, settings: Settings, activity: Activity, users: Users };
+  const pages = { dashboard: Dashboard, enquiries: Enquiries, 'website-images': WebsiteImages, services: Services, projects: Projects, testimonials: Testimonials, gallery: Gallery, settings: Settings, activity: Activity, users: Users };
   const Page = pages[view] || Dashboard;
 
   return (
