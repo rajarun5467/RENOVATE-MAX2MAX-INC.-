@@ -52,7 +52,7 @@ export default function AboutTestimonials() {
     if (!testimonials || testimonials.length <= perView || paused) return;
     const timer = setInterval(() => {
       setIndex((i) => (i >= maxIndex ? 0 : i + 1));
-    }, 5000);
+    }, 3500);
     return () => clearInterval(timer);
   }, [testimonials, perView, paused, maxIndex]);
 
