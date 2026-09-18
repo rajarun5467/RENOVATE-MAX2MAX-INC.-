@@ -4,6 +4,7 @@ const cors = require('cors');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 
 const app = express();
 app.use(cors());
@@ -11,9 +12,29 @@ app.use(express.json());
 
 const DATA_DIR = path.join(__dirname, 'data');
 const QUOTES_FILE = path.join(DATA_DIR, 'quotes.json');
+const UPLOADS_DIR = path.join(__dirname, 'uploads');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const SECRET = process.env.ADMIN_SECRET || 'renovate-max2max-secret';
 const VALID_TOKEN = crypto.createHmac('sha256', SECRET).update(ADMIN_PASSWORD).digest('hex');
+
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+app.use('/uploads', express.static(UPLOADS_DIR));
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: UPLOADS_DIR,
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      const safe = path.basename(file.originalname, ext).replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+      cb(null, `${Date.now()}-${safe}${ext}`);
+    },
+  }),
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const ok = /^image\/(jpeg|png|webp|gif|avif)$/.test(file.mimetype);
+    cb(ok ? null : new Error('Only image files allowed'), ok);
+  },
+});
 
 function readQuotes() {
   try {
@@ -70,6 +91,26 @@ app.post('/api/admin/login', (req, res) => {
   res.status(401).json({ success: false, message: 'Invalid password' });
 });
 
+app.get('/api/admin/stats', requireAdmin, (req, res) => {
+  const quotes = readQuotes();
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+  const stats = {
+    total: quotes.length,
+    new: quotes.filter((q) => q.status === 'new').length,
+    contacted: quotes.filter((q) => q.status === 'contacted').length,
+    done: quotes.filter((q) => q.status === 'done').length,
+    today: quotes.filter((q) => now - new Date(q.createdAt).getTime() < day).length,
+    week: quotes.filter((q) => now - new Date(q.createdAt).getTime() < 7 * day).length,
+    byType: {},
+  };
+  quotes.forEach((q) => {
+    const t = q.type || 'Other';
+    stats.byType[t] = (stats.byType[t] || 0) + 1;
+  });
+  res.json({ success: true, stats });
+});
+
 app.get('/api/admin/quotes', requireAdmin, (req, res) => {
   res.json({ success: true, quotes: readQuotes() });
 });
@@ -91,6 +132,42 @@ app.delete('/api/admin/quotes/:id', requireAdmin, (req, res) => {
     return res.status(404).json({ success: false, message: 'Not found' });
   }
   writeQuotes(filtered);
+  res.json({ success: true });
+});
+
+app.get('/api/admin/images', requireAdmin, (req, res) => {
+  try {
+    const files = fs.readdirSync(UPLOADS_DIR)
+      .filter((f) => /\.(jpe?g|png|webp|gif|avif)$/i.test(f))
+      .map((f) => {
+        const s = fs.statSync(path.join(UPLOADS_DIR, f));
+        return { name: f, url: `/uploads/${f}`, size: s.size, uploadedAt: s.mtime };
+      })
+      .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+    res.json({ success: true, images: files });
+  } catch {
+    res.json({ success: true, images: [] });
+  }
+});
+
+app.post('/api/admin/images', requireAdmin, (req, res) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) return res.status(400).json({ success: false, message: err.message });
+    if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
+    res.json({
+      success: true,
+      image: { name: req.file.filename, url: `/uploads/${req.file.filename}`, size: req.file.size },
+    });
+  });
+});
+
+app.delete('/api/admin/images/:name', requireAdmin, (req, res) => {
+  const name = path.basename(req.params.name);
+  const file = path.join(UPLOADS_DIR, name);
+  if (!fs.existsSync(file)) {
+    return res.status(404).json({ success: false, message: 'Not found' });
+  }
+  fs.unlinkSync(file);
   res.json({ success: true });
 });
 

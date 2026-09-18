@@ -1,21 +1,27 @@
 .admin-page {
   min-height: 100vh;
-  background: #f5f2ec;
+  background: #f4f1ea;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   color: #1a1a1a;
-  padding: 2rem 1rem;
+  display: flex;
 }
 
 /* ---------- Login ---------- */
+.ad-login-bg {
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
 .ad-login {
+  width: 100%;
   max-width: 400px;
-  margin: 8vh auto;
   background: #fff;
   border: 1px solid #e5e0d6;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 3rem 2.5rem;
   text-align: center;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
 }
 
 .ad-logo {
@@ -90,51 +96,161 @@
   color: #b8894a;
 }
 
-/* ---------- Dashboard ---------- */
-.ad-dash {
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.ad-topbar {
+/* ---------- Sidebar ---------- */
+.ad-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #141210;
+  color: #d8d2c6;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.75rem;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 50;
 }
 
-.ad-brand {
+.ad-side-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1.4rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ad-side-brand img {
+  height: 38px;
+  width: auto;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
+}
+
+.ad-side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem 0.75rem;
+  flex: 1;
+}
+
+.ad-side-nav button {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 600;
+  padding: 0.8rem 0.9rem;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: #b5ada0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
 }
 
-.ad-brand img {
-  height: 44px;
-  width: auto;
+.ad-side-nav button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
 }
 
-.ad-topbar-actions {
+.ad-side-nav button.active {
+  background: #b8894a;
+  color: #fff;
+}
+
+.ad-ico {
+  width: 1.2rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.ad-nav-badge {
+  margin-left: auto;
+  background: rgba(184, 137, 74, 0.25);
+  color: #e8c98f;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  justify-content: center;
+  padding: 0 0.35rem;
 }
 
-.ad-topbar-actions .ad-back {
-  margin-top: 0;
-  padding: 0.55rem 1rem;
-  border: 1px solid #d8d2c6;
+.ad-side-nav button.active .ad-nav-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.ad-side-foot {
+  padding: 1rem 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ad-side-link {
+  display: block;
+  padding: 0.7rem 0.9rem;
+  border-radius: 9px;
+  background: none;
+  border: none;
+  color: #b5ada0;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
+}
+
+.ad-side-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.ad-side-link.danger:hover {
+  color: #ff8a8a;
+}
+
+/* ---------- Main ---------- */
+.ad-main {
+  flex: 1;
+  min-width: 0;
+  padding: 1.75rem 2rem 3rem;
+}
+
+.ad-mainbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ad-mainbar h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+
+.ad-burger {
+  display: none;
+  background: #fff;
+  border: 1px solid #e0dacc;
   border-radius: 8px;
-  color: #555;
+  font-size: 1.1rem;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
 }
 
-.ad-refresh,
-.ad-logout {
+.ad-refresh {
   padding: 0.55rem 1.1rem;
   border-radius: 8px;
   font-size: 0.8rem;
@@ -150,15 +266,13 @@
   color: #b8894a;
 }
 
-.ad-logout {
-  background: #1a1a1a;
-  color: #fff;
-  border-color: #1a1a1a;
+.ad-view {
+  animation: adFade 0.25s ease;
 }
 
-.ad-logout:hover {
-  background: #b00020;
-  border-color: #b00020;
+@keyframes adFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
 }
 
 /* ---------- Stats ---------- */
@@ -166,50 +280,222 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.9rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .ad-stat {
   background: #fff;
   border: 1px solid #e5e0d6;
-  border-radius: 10px;
-  padding: 1.1rem 0.75rem;
-  cursor: pointer;
-  text-align: center;
+  border-radius: 12px;
+  padding: 1.3rem 1.1rem;
   transition: all 0.2s;
 }
 
-.ad-stat:hover {
-  border-color: #b8894a;
+.ad-stat.accent {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
 }
 
-.ad-stat.active {
-  border-color: #b8894a;
-  box-shadow: 0 0 0 2px rgba(184, 137, 74, 0.18);
+.ad-stat.accent .num,
+.ad-stat.accent .lbl {
+  color: #e8c98f;
 }
 
 .ad-stat .num {
   display: block;
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.9rem;
+  font-size: 2rem;
   font-weight: 600;
   line-height: 1;
 }
 
 .ad-stat .lbl {
   display: block;
-  margin-top: 0.4rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  margin-top: 0.45rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #888;
 }
 
-/* ---------- List ---------- */
+/* ---------- Dashboard panels ---------- */
+.ad-dash-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1rem;
+}
+
+.ad-panel {
+  background: #fff;
+  border: 1px solid #e5e0d6;
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem;
+}
+
+.ad-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.ad-panel-head h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.ad-link {
+  background: none;
+  border: none;
+  color: #b8894a;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.ad-link:hover {
+  text-decoration: underline;
+}
+
+.ad-muted {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.ad-mini-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid #f0ece4;
+}
+
+.ad-mini-row:first-of-type {
+  border-top: none;
+}
+
+.ad-mini-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.ad-mini-info strong {
+  font-size: 0.9rem;
+}
+
+.ad-mini-info span {
+  font-size: 0.78rem;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ad-mini-time {
+  font-size: 0.75rem;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.ad-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.45rem 0;
+}
+
+.ad-bar-label {
+  width: 110px;
+  font-size: 0.8rem;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ad-bar-track {
+  flex: 1;
+  height: 8px;
+  background: #f0ece4;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.ad-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b8894a, #d4a860);
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+.ad-bar-num {
+  font-size: 0.8rem;
+  font-weight: 600;
+  width: 1.5rem;
+  text-align: right;
+}
+
+/* ---------- Toolbar ---------- */
+.ad-toolbar {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.ad-search {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #d8d2c6;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ad-search:focus {
+  border-color: #b8894a;
+}
+
+.ad-tabs {
+  display: flex;
+  gap: 0.35rem;
+  background: #fff;
+  border: 1px solid #e5e0d6;
+  border-radius: 9px;
+  padding: 0.3rem;
+}
+
+.ad-tabs button {
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  font-size: 0.8rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ad-tabs button:hover {
+  color: #1a1a1a;
+}
+
+.ad-tabs button.active {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* ---------- Inquiry cards ---------- */
 .ad-empty {
   background: #fff;
   border: 1px dashed #d8d2c6;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 3rem;
   text-align: center;
   color: #999;
@@ -224,7 +510,7 @@
 .ad-card {
   background: #fff;
   border: 1px solid #e5e0d6;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   transition: border-color 0.2s;
 }
@@ -266,6 +552,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .ad-badge.new {
@@ -309,9 +596,8 @@
 }
 
 .ad-card-body {
-  padding: 0 1.2rem 1.2rem;
+  padding: 1rem 1.2rem 1.2rem;
   border-top: 1px solid #f0ece4;
-  padding-top: 1rem;
 }
 
 .ad-card-body p {
@@ -351,24 +637,189 @@
   color: #b8894a;
 }
 
-.ad-card-actions button.danger {
+.ad-card-actions button.danger,
+.ad-img-actions button.danger {
   border-color: #f0c4c4;
   color: #b00020;
 }
 
-.ad-card-actions button.danger:hover {
+.ad-card-actions button.danger:hover,
+.ad-img-actions button.danger:hover {
   background: #b00020;
   color: #fff;
 }
 
+/* ---------- Media ---------- */
+.ad-dropzone {
+  border: 2px dashed #cfc7b8;
+  border-radius: 12px;
+  background: #fff;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 0.9rem;
+}
+
+.ad-dropzone:hover,
+.ad-dropzone.over {
+  border-color: #b8894a;
+  background: #fdf9f0;
+}
+
+.ad-drop-ico {
+  font-size: 1.8rem;
+  color: #b8894a;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.ad-dropzone p {
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.ad-note {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0 0 1.25rem;
+}
+
+.ad-note code {
+  background: #efe9dd;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.ad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.ad-img-card {
+  background: #fff;
+  border: 1px solid #e5e0d6;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ad-img-wrap {
+  aspect-ratio: 4 / 3;
+  background: #efe9dd;
+  overflow: hidden;
+}
+
+.ad-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ad-img-info {
+  padding: 0.7rem 0.9rem 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ad-img-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ad-img-actions {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.6rem 0.9rem 0.8rem;
+}
+
+.ad-img-actions button,
+.ad-img-actions a {
+  flex: 1;
+  padding: 0.4rem 0.3rem;
+  border-radius: 6px;
+  border: 1px solid #d8d2c6;
+  background: #fff;
+  font-size: 0.7rem;
+  color: #555;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.ad-img-actions button:hover,
+.ad-img-actions a:hover {
+  border-color: #b8894a;
+  color: #b8894a;
+}
+
+/* ---------- Toast ---------- */
+.ad-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.8rem 1.3rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  animation: adFade 0.25s ease;
+}
+
+.ad-overlay {
+  display: none;
+}
+
 /* ---------- Responsive ---------- */
-@media (max-width: 720px) {
-  .admin-page {
-    padding: 1.25rem 0.75rem;
+@media (max-width: 900px) {
+  .ad-dash-grid {
+    grid-template-columns: 1fr;
   }
 
   .ad-stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .ad-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    width: 250px;
+  }
+
+  .ad-sidebar.open {
+    transform: none;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.4);
+  }
+
+  .ad-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+  }
+
+  .ad-burger {
+    display: block;
+  }
+
+  .ad-main {
+    padding: 1.25rem 1rem 2.5rem;
   }
 
   .ad-card-head {
@@ -384,6 +835,5 @@
 
   .ad-login {
     padding: 2.25rem 1.5rem;
-    margin: 5vh auto;
   }
 }
