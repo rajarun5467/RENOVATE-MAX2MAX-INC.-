@@ -41,7 +41,34 @@
   -webkit-font-smoothing: antialiased;
 }
 .adm * { box-sizing: border-box; }
-.adm h1,.adm h2,.adm h3,.adm h4 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+
+/* Reset global site styles that leak into admin */
+.adm h1,.adm h2,.adm h3,.adm h4,.adm h5,.adm h6 { font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+.adm p { margin: 0; font-family: inherit; line-height: 1.5; }
+.adm a { color: inherit; }
+.adm img { display: block; }
+.adm button { font-family: inherit; }
+.adm input,.adm select,.adm textarea { font-family: inherit; }
+.adm code { font-family: 'Consolas','Monaco',monospace; font-size: .85em; background: var(--surface-2); padding: .1rem .35rem; border-radius: 4px; }
+.adm .container { width: auto; margin: 0; }
+.adm .reveal { opacity: 1; transform: none; transition: none; }
+.adm .eyebrow { font-size: .82rem; text-transform: none; letter-spacing: normal; color: var(--text-2); margin-bottom: 0; }
+.adm .btn-primary { background: var(--brand); color: #fff; padding: .55rem 1rem; font-size: .85rem; letter-spacing: normal; text-transform: none; }
+.adm .btn-primary:hover { background: #2a2a2e; color: #fff; }
+.adm .btn-outline { border: 1px solid var(--border-strong); padding: .55rem 1rem; font-size: .85rem; letter-spacing: normal; text-transform: none; color: var(--text); }
+.adm .btn-outline:hover { border-color: var(--muted); color: var(--text); }
+.adm .form input,.adm .form select,.adm .form textarea { background: var(--surface); border: 1px solid var(--border-strong); color: var(--text); border-radius: var(--radius-sm); font-size: .88rem; padding: .6rem .8rem; margin-bottom: 0; }
+.adm .form input::placeholder,.adm .form textarea::placeholder { color: var(--muted); }
+.adm .form input:focus,.adm .form select:focus,.adm .form textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.adm .form button { background: var(--brand); color: #fff; border: none; padding: .55rem 1rem; font-weight: 500; letter-spacing: normal; text-transform: none; cursor: pointer; border-radius: var(--radius-sm); font-size: .85rem; }
+.adm .form button:hover { background: #2a2a2e; }
+.adm .section-title { font-size: 1.5rem; }
+.adm .lead { font-size: .88rem; color: var(--text-2); }
+.adm .service { text-align: left; padding-top: 0; border-top: none; }
+.adm .service:hover { transform: none; }
+.adm .service .num { font-size: .68rem; color: var(--accent); margin-bottom: .5rem; }
+.adm .service h3 { font-size: 1rem; margin-bottom: .3rem; color: var(--text); }
+.adm .service p { color: var(--text-2); font-size: .87rem; line-height: 1.5; }
 
 /* ---------- Sidebar ---------- */
 .adm-sidebar {
