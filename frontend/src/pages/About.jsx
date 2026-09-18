@@ -134,9 +134,9 @@ export default function About() {
         </div>
       </div>
     </section>
+  `;
 
-    <AboutTestimonials />
-
+  const html2 = `
     <section class="abt-cta">
       <div class="container abt-reveal">
         <h2>Let's build something great.</h2>
@@ -149,5 +149,11 @@ export default function About() {
     </section>
   `;
 
-  return <div className="about-page" dangerouslySetInnerHTML={{ __html: html }} />;
+  return (
+    <div className="about-page">
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <AboutTestimonials />
+      <div dangerouslySetInnerHTML={{ __html: html2 }} />
+    </div>
+  );
 }
