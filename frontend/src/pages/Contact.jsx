@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import API from '../config.js';
 import './Contact.css';
 
 export default function Contact() {
@@ -32,7 +33,7 @@ export default function Contact() {
     }
     setStatus({ loading: true, success: '', error: '' });
     try {
-      const res = await fetch('http://localhost:5000/api/quote', {
+      const res = await fetch(`${API}/quote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

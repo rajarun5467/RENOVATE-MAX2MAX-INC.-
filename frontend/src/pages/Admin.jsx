@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
+import API from '../config.js';
 import './Admin.css';
-
-const API = 'http://localhost:5000/api';
 
 export default function Admin() {
   const [token, setToken] = useState(() => localStorage.getItem('admin_token') || '');
