@@ -91,6 +91,9 @@ app.post('/api/quote', (req, res) => {
 });
 
 /* public read-only for site content (no auth) */
+app.get('/api/content/image-overrides', (req, res) => {
+  res.json({ success: true, data: readObj('image-overrides') });
+});
 app.get('/api/content/:collection', (req, res) => {
   const allowed = ['services', 'projects', 'testimonials', 'settings', 'seo'];
   if (!allowed.includes(req.params.collection)) return res.status(404).json({ success: false });
@@ -290,6 +293,27 @@ app.delete('/api/admin/images/:name', requireAdmin, (req, res) => {
   if (!fs.existsSync(file)) return res.status(404).json({ success: false, message: 'Not found' });
   fs.unlinkSync(file);
   logActivity('image_deleted', { ref: name });
+  res.json({ success: true });
+});
+
+/* ---------- image overrides (admin write) ---------- */
+app.get('/api/admin/image-overrides', requireAdmin, (req, res) => {
+  res.json({ success: true, data: readObj('image-overrides') });
+});
+app.put('/api/admin/image-overrides', requireAdmin, (req, res) => {
+  const cur = readObj('image-overrides');
+  const next = { ...cur, ...req.body, updatedAt: new Date().toISOString() };
+  writeObj('image-overrides', next);
+  logActivity('image_override_updated');
+  res.json({ success: true, data: next });
+});
+app.delete('/api/admin/image-overrides/:key', requireAdmin, (req, res) => {
+  const overrides = readObj('image-overrides');
+  const key = decodeURIComponent(req.params.key);
+  if (!(key in overrides)) return res.status(404).json({ success: false, message: 'Not found' });
+  delete overrides[key];
+  writeObj('image-overrides', overrides);
+  logActivity('image_override_removed', { ref: key });
   res.json({ success: true });
 });
 

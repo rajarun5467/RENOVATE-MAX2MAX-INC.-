@@ -3,6 +3,7 @@ import API from '../config.js';
 import './admin.css';
 import { ToastProvider, ConfirmProvider, useToast, useConfirm, Modal, Badge, Field, Input, Textarea, Select, Skeleton, TableSkeleton, Empty, Pagination, ImagePicker, useApi, timeAgo, fmtSize } from './ui.jsx';
 import { IMAGE_USAGE, EXTERNAL_IMAGES, getUsage, isUsed } from './imageUsage.js';
+import { WEBSITE_IMAGE_MAP, getAllMappedImages, findUsages } from './websiteImageMap.js';
 
 window.__ADM_API__ = API;
 const API_ORIGIN = API.replace(/\/api$/, '');
@@ -51,6 +52,7 @@ const NAV = [
     { id: 'dashboard', label: 'Dashboard', icon: '◈' },
   ]},
   { group: 'Content', items: [
+    { id: 'website-images', label: 'Website Images', icon: '▦' },
     { id: 'services', label: 'Services', icon: '⚙' },
     { id: 'projects', label: 'Projects', icon: '▣' },
     { id: 'testimonials', label: 'Testimonials', icon: '✦' },
@@ -519,6 +521,238 @@ function Testimonials() {
 }
 
 /* ============================================================
+   WEBSITE IMAGES — page → section → image explorer
+   ============================================================ */
+function WebsiteImages() {
+  const api = useApi();
+  const toast = useToast();
+  const [selectedPage, setSelectedPage] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [overrides, setOverrides] = useState({});
+  const [preview, setPreview] = useState(null);
+  const [replaceTarget, setReplaceTarget] = useState(null);
+  const [replaceUrl, setReplaceUrl] = useState('');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    api('/admin/image-overrides').then((d) => { if (d.success) setOverrides(d.data || {}); });
+  }, []);
+
+  const saveOverride = async (key, url) => {
+    const next = { ...overrides, [key]: url };
+    await api('/admin/image-overrides', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+    setOverrides(next); toast('Image replaced — live on website', 'success');
+  };
+  const removeOverride = async (key) => {
+    const next = { ...overrides }; delete next[key];
+    await api('/admin/image-overrides', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+    setOverrides(next); toast('Reverted to original', 'success');
+  };
+
+  // Filter pages by search
+  const filteredPages = WEBSITE_IMAGE_MAP.filter((p) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return p.page.toLowerCase().includes(q) || p.sections.some((s) => s.name.toLowerCase().includes(q) || s.images.some((i) => (i.src || '').toLowerCase().includes(q) || (i.label || '').toLowerCase().includes(q)));
+  });
+
+  const totalImages = getAllMappedImages().length;
+  const overriddenCount = Object.keys(overrides).length;
+
+  return (
+    <>
+      <div className="adm-page-head">
+        <div><h1>Website Images</h1><p>See exactly where every image is used on your website</p></div>
+        <div className="adm-page-actions">
+          <span className="adm-chip">{totalImages} images mapped</span>
+          <span className="adm-chip">{overriddenCount} replaced</span>
+        </div>
+      </div>
+
+      <div className="adm-toolbar">
+        <div className="adm-search">
+          <span className="adm-search-ico">⌕</span>
+          <input placeholder="Search pages, sections, images…" value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+        {(selectedPage || selectedSection) && (
+          <button className="adm-btn adm-btn-sm" onClick={() => { setSelectedPage(null); setSelectedSection(null); }}>← All pages</button>
+        )}
+      </div>
+
+      {/* Breadcrumb */}
+      {(selectedPage || selectedSection) && (
+        <div style={{ marginBottom: '1rem', fontSize: '.85rem', color: 'var(--muted)' }}>
+          <button className="adm-link" onClick={() => { setSelectedPage(null); setSelectedSection(null); }}>Website Images</button>
+          {selectedPage && <> › <button className="adm-link" onClick={() => setSelectedSection(null)}>{selectedPage.page}</button></>}
+          {selectedSection && <> › <b style={{ color: 'var(--text)' }}>{selectedSection.name}</b></>}
+        </div>
+      )}
+
+      {/* LEVEL 1: Page list */}
+      {!selectedPage && (
+        <div className="adm-grid-2">
+          {filteredPages.map((page) => {
+            const imgCount = page.sections.reduce((n, s) => n + s.images.filter((i) => i.src).length, 0);
+            return (
+              <div key={page.page} className="adm-panel" style={{ cursor: 'pointer' }} onClick={() => { setSelectedPage(page); setSelectedSection(null); }}>
+                <div className="adm-panel-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 8, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', color: 'var(--accent)' }}>▦</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, fontSize: '1rem' }}>{page.page}</div>
+                    <div className="adm-muted">{page.sections.length} sections · {imgCount} images</div>
+                  </div>
+                  <span style={{ color: 'var(--muted)' }}>→</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* LEVEL 2: Section list within a page */}
+      {selectedPage && !selectedSection && (
+        <div className="adm-grid-2">
+          {selectedPage.sections.map((section) => {
+            const imgs = section.images.filter((i) => i.src);
+            return (
+              <div key={section.id} className="adm-panel" style={{ cursor: 'pointer' }} onClick={() => setSelectedSection(section)}>
+                <div className="adm-panel-body">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '.75rem' }}>
+                    <span className="adm-badge published dot">{section.type}</span>
+                    <div style={{ fontWeight: 600, flex: 1 }}>{section.name}</div>
+                    <span className="adm-muted">{imgs.length} img{imgs.length !== 1 ? 's' : ''}</span>
+                  </div>
+                  {imgs.length > 0 ? (
+                    <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                      {imgs.slice(0, 5).map((img, i) => (
+                        <div key={i} style={{ width: 56, height: 56, borderRadius: 6, overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
+                          <img src={overrides[img.src] || img.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                          {overrides[img.src] && <span style={{ position: 'absolute', bottom: 2, right: 2, fontSize: '.5rem', background: 'var(--accent)', color: '#fff', padding: '1px 3px', borderRadius: 3 }}>R</span>}
+                        </div>
+                      ))}
+                      {imgs.length > 5 && <div style={{ width: 56, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)', fontSize: '.8rem' }}>+{imgs.length - 5}</div>}
+                    </div>
+                  ) : (
+                    <div className="adm-muted" style={{ fontSize: '.82rem' }}>Dynamic from backend (no static images)</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* LEVEL 3: Images within a section */}
+      {selectedPage && selectedSection && (
+        <div className="adm-panel">
+          <div className="adm-panel-head"><h3>{selectedSection.name}</h3><span className="adm-muted">{selectedPage.page} · {selectedSection.type}</span></div>
+          <div className="adm-panel-body">
+            {selectedSection.images.filter((i) => i.src).length === 0 ? (
+              <Empty icon="▦" title="No static images" sub="This section uses dynamic images from the backend." />
+            ) : (
+              <div className="adm-media-grid">
+                {selectedSection.images.filter((i) => i.src).map((img, i) => {
+                  const displaySrc = overrides[img.src] || img.src;
+                  const isOverridden = !!overrides[img.src];
+                  return (
+                    <div key={i} className="adm-media-card">
+                      <div className="adm-media-img" style={{ cursor: 'pointer' }} onClick={() => setPreview({ ...img, displaySrc, isOverridden, page: selectedPage.page, section: selectedSection.name })}>
+                        <img src={displaySrc} alt={img.label} loading="lazy" onError={(e) => { e.target.style.opacity = .3; }} />
+                        {isOverridden && <span style={{ position: 'absolute', top: 6, right: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: 'var(--accent)', color: '#fff' }}>Replaced</span>}
+                      </div>
+                      <div className="adm-media-info">
+                        <div className="adm-media-name">{img.label}</div>
+                        <div className="adm-media-meta">Position {img.position} · {img.source}</div>
+                      </div>
+                      <div className="adm-media-actions">
+                        <button onClick={() => setPreview({ ...img, displaySrc, isOverridden, page: selectedPage.page, section: selectedSection.name })}>Details</button>
+                        <button onClick={() => { setReplaceTarget(img); setReplaceUrl(overrides[img.src] || ''); }}>Replace</button>
+                        {isOverridden && <button className="danger" onClick={() => removeOverride(img.src)}>Revert</button>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Preview modal */}
+      <Modal open={!!preview} onClose={() => setPreview(null)} title={preview?.label || 'Image'} size="lg"
+        footer={preview && (
+          <>
+            <button className="adm-btn" onClick={() => { navigator.clipboard.writeText(preview.displaySrc); toast('URL copied', 'success'); }}>Copy URL</button>
+            <a className="adm-btn" href={preview.displaySrc} target="_blank" rel="noreferrer">Open Original</a>
+            <button className="adm-btn" onClick={() => setPreview(null)}>Close</button>
+          </>
+        )}>
+        {preview && (
+          <div>
+            <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: '1.25rem', background: 'var(--surface-2)' }}>
+              <img src={preview.displaySrc} alt={preview.label} style={{ width: '100%', maxHeight: 400, objectFit: 'contain', display: 'block' }} />
+            </div>
+            <div className="adm-field-row">
+              <Field label="Page"><Input value={preview.page} readOnly /></Field>
+              <Field label="Section"><Input value={preview.section} readOnly /></Field>
+            </div>
+            <div className="adm-field-row">
+              <Field label="Position"><Input value={`Image ${preview.position}`} readOnly /></Field>
+              <Field label="Source"><Input value={preview.source} readOnly /></Field>
+            </div>
+            <Field label="Original Path"><Input value={preview.src} readOnly /></Field>
+            {preview.isOverridden && <Field label="Current (Overridden)"><Input value={preview.displaySrc} readOnly /></Field>}
+            <Field label="Reference Type">
+              <span className="adm-chip">{preview.refType === 'img' ? '<img> tag' : preview.refType === 'css' ? 'CSS background' : preview.refType === 'css-inline' ? 'Inline style' : preview.refType === 'api' ? 'API response' : 'Unknown'}</span>
+            </Field>
+            {preview.isOverridden && (
+              <div style={{ padding: '.5rem .75rem', background: 'var(--accent-soft)', borderRadius: 7, fontSize: '.82rem', color: 'var(--accent)', marginTop: '.5rem' }}>
+                ✓ This image has been replaced. The website now shows the replacement. Click "Revert" to restore the original.
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Replace modal */}
+      <Modal open={!!replaceTarget} onClose={() => setReplaceTarget(null)} title="Replace Image"
+        footer={replaceTarget && (
+          <>
+            <button className="adm-btn" onClick={() => setReplaceTarget(null)}>Cancel</button>
+            <button className="adm-btn adm-btn-primary" onClick={() => { saveOverride(replaceTarget.src, replaceUrl); setReplaceTarget(null); }} disabled={!replaceUrl.trim()}>Save Replacement</button>
+          </>
+        )}>
+        {replaceTarget && (
+          <div>
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem' }}>
+              <div style={{ flex: 1 }}>
+                <div className="adm-muted" style={{ fontSize: '.78rem', marginBottom: '.4rem' }}>Current (Original)</div>
+                <div style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '4/3', background: 'var(--surface-2)' }}>
+                  <img src={replaceTarget.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <div className="adm-muted" style={{ fontSize: '.72rem', marginTop: '.3rem' }}>{replaceTarget.src}</div>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div className="adm-muted" style={{ fontSize: '.78rem', marginBottom: '.4rem' }}>New (Replacement)</div>
+                <div style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '4/3', background: 'var(--surface-2)' }}>
+                  {replaceUrl ? <img src={replaceUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.opacity = .3; }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>No URL set</div>}
+                </div>
+              </div>
+            </div>
+            <Field label="Replacement Image URL" hint="Paste a URL from Media Library (Copy URL button) or any public image URL. The website will immediately show this new image in place of the original.">
+              <Input value={replaceUrl} onChange={(e) => setReplaceUrl(e.target.value)} placeholder="https://… or /uploads/…" />
+            </Field>
+            <div style={{ padding: '.5rem .75rem', background: 'var(--warn-soft)', borderRadius: 7, fontSize: '.82rem', color: 'var(--warn)' }}>
+              ⚠ The original file is not modified. You can revert anytime.
+            </div>
+          </div>
+        )}
+      </Modal>
+    </>
+  );
+}
+
+/* ============================================================
    GALLERY (uses projects as source — featured projects)
    ============================================================ */
 function Gallery({ go }) {
@@ -954,7 +1188,7 @@ export default function Admin() {
     </ConfirmProvider></ToastProvider>
   );
 
-  const pages = { dashboard: Dashboard, enquiries: Enquiries, services: Services, projects: Projects, testimonials: Testimonials, gallery: Gallery, media: Media, seo: SEO, settings: Settings, activity: Activity, users: Users };
+  const pages = { dashboard: Dashboard, enquiries: Enquiries, 'website-images': WebsiteImages, services: Services, projects: Projects, testimonials: Testimonials, gallery: Gallery, media: Media, seo: SEO, settings: Settings, activity: Activity, users: Users };
   const Page = pages[view] || Dashboard;
 
   return (
