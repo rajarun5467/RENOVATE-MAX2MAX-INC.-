@@ -4,6 +4,7 @@ import './admin.css';
 import { ToastProvider, ConfirmProvider, useToast, useConfirm, Modal, Badge, Field, Input, Textarea, Select, Skeleton, TableSkeleton, Empty, Pagination, ImagePicker, useApi, timeAgo, fmtSize } from './ui.jsx';
 import { IMAGE_USAGE, EXTERNAL_IMAGES, getUsage, isUsed } from './imageUsage.js';
 import { WEBSITE_IMAGE_MAP, getAllMappedImages, findUsages } from './websiteImageMap.js';
+import { FRONTEND_SERVICES, FRONTEND_PROJECTS, FRONTEND_GALLERY, FRONTEND_TESTIMONIALS, mergeServices, mergeProjects, mergeTestimonials, getAllGalleryImages, getGalleryByCategory, getGalleryByPage } from './frontendData.js';
 
 window.__ADM_API__ = API;
 const API_ORIGIN = API.replace(/\/api$/, '');
@@ -150,8 +151,8 @@ function Dashboard({ go }) {
       <div className="adm-stats">
         <StatCard ico="✉" tone="accent" num={stats.total} label="Total Enquiries" />
         <StatCard ico="●" tone="warn" num={stats.new} label="New Enquiries" />
-        <StatCard ico="⚙" tone="blue" num={stats.services} label="Services" sub={`${stats.servicesPublished} published`} />
-        <StatCard ico="▣" tone="dark" num={stats.projects} label="Projects" sub={`${stats.projectsFeatured} featured`} />
+        <StatCard ico="⚙" tone="blue" num={FRONTEND_SERVICES.length + stats.services} label="Services" sub={`${FRONTEND_SERVICES.length} frontend + ${stats.services} database`} />
+        <StatCard ico="▣" tone="dark" num={FRONTEND_PROJECTS.length + stats.projects} label="Projects" sub={`${FRONTEND_PROJECTS.length} frontend + ${stats.projects} database`} />
       </div>
       <div className="adm-grid-2">
         <div className="adm-panel">
@@ -431,92 +432,208 @@ function CrudPage({ collection, singular, title, desc, columns, renderForm, seed
   );
 }
 
-/* ---------- Services ---------- */
+/* ---------- Services (frontend + backend merged) ---------- */
 function Services() {
+  const api = useApi();
+  const toast = useToast();
+  const [backendServices, setBackendServices] = useState(null);
+  const [detail, setDetail] = useState(null);
+
+  useEffect(() => {
+    api('/admin/services').then((d) => { if (d.success) setBackendServices(d.data); else setBackendServices([]); });
+  }, []);
+
+  const allServices = backendServices ? mergeServices(backendServices) : null;
+
+  if (!allServices) return <div className="adm-panel"><TableSkeleton /></div>;
+
   return (
-    <CrudPage collection="services" singular="Service" title="Services" desc="Manage the services displayed on your website" icon="⚙"
-      seedForm={() => ({ title: '', slug: '', summary: '', description: '', image: '', icon: '', published: true, order: 0 })}
-      columns={[
-        { key: 'image', label: '', w: 60, render: (r) => r.image ? <img src={r.image} className="adm-thumb" alt="" /> : <div className="adm-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>⚙</div> },
-        { key: 'title', label: 'Service', render: (r) => (<><div className="adm-row-title">{r.title || 'Untitled'}</div><div className="adm-row-sub">{r.summary}</div></>) },
-        { key: 'published', label: 'Status', render: (r) => <Badge status={r.published ? 'published' : 'draft'}>{r.published ? 'Published' : 'Draft'}</Badge> },
-        { key: 'createdAt', label: 'Created', render: (r) => <span className="adm-muted">{timeAgo(r.createdAt)}</span> },
-      ]}
-      renderForm={(row, set) => (
-        <>
-          <Field label="Service Title" required><Input value={row.title} onChange={(e) => set({ ...row, title: e.target.value })} placeholder="e.g. Bathroom Renovation" /></Field>
-          <Field label="Summary"><Input value={row.summary} onChange={(e) => set({ ...row, summary: e.target.value })} placeholder="Short one-line description" /></Field>
-          <Field label="Description"><Textarea value={row.description} onChange={(e) => set({ ...row, description: e.target.value })} placeholder="Full description of the service" /></Field>
-          <ImagePicker value={row.image} onChange={(v) => set({ ...row, image: v })} label="Service Image" />
-          <div className="adm-field-row">
-            <Field label="Icon (emoji or text)"><Input value={row.icon} onChange={(e) => set({ ...row, icon: e.target.value })} placeholder="🛁" /></Field>
-            <Field label="Display Order"><Input type="number" value={row.order} onChange={(e) => set({ ...row, order: +e.target.value })} /></Field>
+    <>
+      <div className="adm-page-head">
+        <div><h1>Services</h1><p>Services displayed on your website ({allServices.length} total)</p></div>
+        <div className="adm-page-actions">
+          <button className="adm-btn adm-btn-primary" onClick={() => { /* TODO: open create modal */ toast('Use the form to add new services', ''); }}>+ Add Service</button>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+        <span className="adm-chip"><strong>{FRONTEND_SERVICES.length}</strong>&nbsp;from frontend</span>
+        <span className="adm-chip"><strong>{backendServices?.length || 0}</strong>&nbsp;from database</span>
+      </div>
+
+      <div className="adm-panel adm-panel-flush">
+        <div className="adm-table-wrap">
+          <table className="adm-table">
+            <thead><tr><th></th><th>Service</th><th>Used On</th><th>Source</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              {allServices.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.image ? <img src={s.image} className="adm-thumb" alt="" /> : <div className="adm-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>⚙</div>}</td>
+                  <td>
+                    <div className="adm-row-title">{s.title}</div>
+                    <div className="adm-row-sub">{s.summary}</div>
+                  </td>
+                  <td>{s.pages ? s.pages.join(', ') : '—'}</td>
+                  <td><span className="adm-chip">{s.source === 'frontend' ? 'Frontend' : 'Database'}</span></td>
+                  <td><Badge status={s.published ? 'published' : 'draft'}>{s.published ? 'Active' : 'Draft'}</Badge></td>
+                  <td><div className="adm-cell-actions">
+                    <button className="adm-btn adm-btn-sm" onClick={() => setDetail(s)}>View</button>
+                  </div></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <Modal open={!!detail} onClose={() => setDetail(null)} title={detail?.title || 'Service'} size="lg"
+        footer={<button className="adm-btn" onClick={() => setDetail(null)}>Close</button>}>
+        {detail && (
+          <div>
+            {detail.image && <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: '1.25rem' }}><img src={detail.image} alt="" style={{ width: '100%', maxHeight: 300, objectFit: 'cover' }} /></div>}
+            <div className="adm-field-row">
+              <Field label="Service Name"><Input value={detail.title} readOnly /></Field>
+              <Field label="Source"><Input value={detail.source === 'frontend' ? 'Frontend (static)' : 'Database'} readOnly /></Field>
+            </div>
+            <Field label="Summary"><Input value={detail.summary} readOnly /></Field>
+            <Field label="Description"><Textarea value={detail.description} readOnly /></Field>
+            <Field label="Used On Pages">
+              {detail.pages ? (
+                <div style={{ display: 'flex', gap: '.4rem', flexWrap: 'wrap' }}>
+                  {detail.pages.map((p) => <span key={p} className="adm-badge published dot">{p}</span>)}
+                </div>
+              ) : <span className="adm-muted">—</span>}
+            </Field>
+            {detail.source === 'frontend' && (
+              <div style={{ padding: '.5rem .75rem', background: 'var(--warn-soft)', borderRadius: 7, fontSize: '.82rem', color: 'var(--warn)', marginTop: '.5rem' }}>
+                ⚠ This service is hardcoded in the frontend. To edit it, modify the frontend source code. New services added via the admin panel will appear here with "Database" source.
+              </div>
+            )}
           </div>
-          <label className="adm-checkbox"><input type="checkbox" checked={row.published} onChange={(e) => set({ ...row, published: e.target.checked })} /> Published</label>
-        </>
-      )}
-    />
+        )}
+      </Modal>
+    </>
   );
 }
 
-/* ---------- Projects ---------- */
+/* ---------- Projects (frontend + backend merged) ---------- */
 function Projects() {
+  const api = useApi();
+  const [backendProjects, setBackendProjects] = useState(null);
+  const [detail, setDetail] = useState(null);
+
+  useEffect(() => {
+    api('/admin/projects').then((d) => { if (d.success) setBackendProjects(d.data); else setBackendProjects([]); });
+  }, []);
+
+  const allProjects = backendProjects ? mergeProjects(backendProjects) : null;
+  if (!allProjects) return <div className="adm-panel"><TableSkeleton /></div>;
+
+  // Group by category
+  const byCategory = {};
+  allProjects.forEach((p) => {
+    const cat = p.category || 'Other';
+    if (!byCategory[cat]) byCategory[cat] = [];
+    byCategory[cat].push(p);
+  });
+
   return (
-    <CrudPage collection="projects" singular="Project" title="Projects" desc="Manage your portfolio of completed projects" icon="▣"
-      seedForm={() => ({ title: '', category: '', location: '', description: '', image: '', gallery: [], featured: false, published: true })}
-      columns={[
-        { key: 'image', label: '', w: 60, render: (r) => r.image ? <img src={r.image} className="adm-thumb" alt="" /> : <div className="adm-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>▣</div> },
-        { key: 'title', label: 'Project', render: (r) => (<><div className="adm-row-title">{r.title || 'Untitled'}</div><div className="adm-row-sub">{r.category}{r.location ? ` · ${r.location}` : ''}</div></>) },
-        { key: 'featured', label: 'Featured', render: (r) => r.featured ? <Badge status="featured">Featured</Badge> : <span className="adm-muted">—</span> },
-        { key: 'published', label: 'Status', render: (r) => <Badge status={r.published ? 'published' : 'draft'}>{r.published ? 'Published' : 'Draft'}</Badge> },
-        { key: 'createdAt', label: 'Created', render: (r) => <span className="adm-muted">{timeAgo(r.createdAt)}</span> },
-      ]}
-      renderForm={(row, set) => (
-        <>
-          <div className="adm-field-row">
-            <Field label="Project Title" required><Input value={row.title} onChange={(e) => set({ ...row, title: e.target.value })} placeholder="e.g. Modern Bathroom Remodel" /></Field>
-            <Field label="Category"><Input value={row.category} onChange={(e) => set({ ...row, category: e.target.value })} placeholder="Bathroom" /></Field>
+    <>
+      <div className="adm-page-head">
+        <div><h1>Projects</h1><p>Portfolio and selected work ({allProjects.length} total)</p></div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+        <span className="adm-chip"><strong>{FRONTEND_PROJECTS.length}</strong>&nbsp;from frontend</span>
+        <span className="adm-chip"><strong>{backendProjects?.length || 0}</strong>&nbsp;from database</span>
+        {Object.keys(byCategory).map((cat) => <span key={cat} className="adm-chip">{cat}: {byCategory[cat].length}</span>)}
+      </div>
+
+      {Object.entries(byCategory).map(([cat, projects]) => (
+        <div key={cat} className="adm-panel" style={{ marginBottom: '1rem' }}>
+          <div className="adm-panel-head"><h3>{cat}</h3><span className="adm-muted">{projects.length} projects</span></div>
+          <div className="adm-panel-body">
+            <div className="adm-media-grid">
+              {projects.map((p) => (
+                <div key={p.id} className="adm-media-card" onClick={() => setDetail(p)} style={{ cursor: 'pointer' }}>
+                  <div className="adm-media-img">
+                    {p.image ? <img src={p.image} alt={p.title} loading="lazy" /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>▣</div>}
+                    <span style={{ position: 'absolute', top: 6, left: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: p.source === 'frontend' ? 'var(--accent-soft)' : 'var(--info-soft)', color: p.source === 'frontend' ? 'var(--accent)' : 'var(--info)' }}>{p.source === 'frontend' ? 'Frontend' : 'Database'}</span>
+                  </div>
+                  <div className="adm-media-info">
+                    <div className="adm-media-name">{p.title}</div>
+                    <div className="adm-media-meta">{p.page} → {p.section}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="adm-field-row">
-            <Field label="Location"><Input value={row.location} onChange={(e) => set({ ...row, location: e.target.value })} placeholder="Edmonton, AB" /></Field>
-            <Field label="Featured"><Select value={row.featured ? '1' : '0'} onChange={(e) => set({ ...row, featured: e.target.value === '1' })}><option value="0">No</option><option value="1">Yes</option></Select></Field>
+        </div>
+      ))}
+
+      <Modal open={!!detail} onClose={() => setDetail(null)} title={detail?.title || 'Project'} size="lg"
+        footer={<button className="adm-btn" onClick={() => setDetail(null)}>Close</button>}>
+        {detail && (
+          <div>
+            {detail.image && <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: '1.25rem' }}><img src={detail.image} alt="" style={{ width: '100%', maxHeight: 350, objectFit: 'cover' }} /></div>}
+            <div className="adm-field-row">
+              <Field label="Project Name"><Input value={detail.title} readOnly /></Field>
+              <Field label="Category"><Input value={detail.category || '—'} readOnly /></Field>
+            </div>
+            <div className="adm-field-row">
+              <Field label="Page"><Input value={detail.page || '—'} readOnly /></Field>
+              <Field label="Section"><Input value={detail.section || '—'} readOnly /></Field>
+            </div>
+            <Field label="Description"><Textarea value={detail.description || '—'} readOnly /></Field>
+            <div className="adm-field-row">
+              <Field label="Source"><Input value={detail.source === 'frontend' ? 'Frontend (static)' : 'Database'} readOnly /></Field>
+              <Field label="Status"><Input value={detail.published ? 'Active' : 'Draft'} readOnly /></Field>
+            </div>
           </div>
-          <Field label="Description"><Textarea value={row.description} onChange={(e) => set({ ...row, description: e.target.value })} /></Field>
-          <ImagePicker value={row.image} onChange={(v) => set({ ...row, image: v })} label="Cover Image" />
-          <label className="adm-checkbox"><input type="checkbox" checked={row.published} onChange={(e) => set({ ...row, published: e.target.checked })} /> Published</label>
-        </>
-      )}
-    />
+        )}
+      </Modal>
+    </>
   );
 }
 
-/* ---------- Testimonials ---------- */
+/* ---------- Testimonials (honest empty state) ---------- */
 function Testimonials() {
   return (
-    <CrudPage collection="testimonials" singular="Testimonial" title="Testimonials" desc="Customer reviews and testimonials" icon="✦"
-      seedForm={() => ({ name: '', designation: '', image: '', text: '', rating: 5, published: true })}
-      columns={[
-        { key: 'image', label: '', w: 60, render: (r) => r.image ? <img src={r.image} className="adm-thumb" alt="" /> : <div className="adm-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>☻</div> },
-        { key: 'name', label: 'Customer', render: (r) => (<><div className="adm-row-title">{r.name || 'Untitled'}</div><div className="adm-row-sub">{r.designation}</div></>) },
-        { key: 'rating', label: 'Rating', render: (r) => <span style={{ color: 'var(--accent)' }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span> },
-        { key: 'published', label: 'Status', render: (r) => <Badge status={r.published ? 'published' : 'draft'}>{r.published ? 'Published' : 'Draft'}</Badge> },
-        { key: 'createdAt', label: 'Created', render: (r) => <span className="adm-muted">{timeAgo(r.createdAt)}</span> },
-      ]}
-      renderForm={(row, set) => (
-        <>
-          <div className="adm-field-row">
-            <Field label="Customer Name" required><Input value={row.name} onChange={(e) => set({ ...row, name: e.target.value })} /></Field>
-            <Field label="Designation"><Input value={row.designation} onChange={(e) => set({ ...row, designation: e.target.value })} placeholder="Homeowner, Edmonton" /></Field>
-          </div>
-          <Field label="Testimonial" required><Textarea value={row.text} onChange={(e) => set({ ...row, text: e.target.value })} /></Field>
-          <div className="adm-field-row">
-            <Field label="Rating (1-5)"><Select value={row.rating} onChange={(e) => set({ ...row, rating: +e.target.value })}>{[1,2,3,4,5].map((n) => <option key={n} value={n}>{'★'.repeat(n)} ({n})</option>)}</Select></Field>
-            <Field label="Published"><Select value={row.published ? '1' : '0'} onChange={(e) => set({ ...row, published: e.target.value === '1' })}><option value="1">Yes</option><option value="0">No</option></Select></Field>
-          </div>
-          <ImagePicker value={row.image} onChange={(v) => set({ ...row, image: v })} label="Profile Image" />
-        </>
-      )}
-    />
+    <>
+      <div className="adm-page-head">
+        <div><h1>Testimonials</h1><p>Customer reviews displayed on your website</p></div>
+      </div>
+      <div className="adm-panel">
+        <div className="adm-panel-body">
+          <Empty icon="✦" title="No testimonials on the website yet" sub="The frontend has a testimonials section on the Home page, but no testimonials are currently stored. Add testimonials using the form below — they will appear on the website immediately." />
+          <div className="adm-divider" />
+          <CrudPage collection="testimonials" singular="Testimonial" title="" desc="" icon="✦"
+            seedForm={() => ({ name: '', designation: '', image: '', text: '', rating: 5, published: true })}
+            columns={[
+              { key: 'image', label: '', w: 60, render: (r) => r.image ? <img src={r.image} className="adm-thumb" alt="" /> : <div className="adm-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>☻</div> },
+              { key: 'name', label: 'Customer', render: (r) => (<><div className="adm-row-title">{r.name || 'Untitled'}</div><div className="adm-row-sub">{r.designation}</div></>) },
+              { key: 'rating', label: 'Rating', render: (r) => <span style={{ color: 'var(--accent)' }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span> },
+              { key: 'published', label: 'Status', render: (r) => <Badge status={r.published ? 'published' : 'draft'}>{r.published ? 'Published' : 'Draft'}</Badge> },
+              { key: 'createdAt', label: 'Created', render: (r) => <span className="adm-muted">{timeAgo(r.createdAt)}</span> },
+            ]}
+            renderForm={(row, set) => (
+              <>
+                <div className="adm-field-row">
+                  <Field label="Customer Name" required><Input value={row.name} onChange={(e) => set({ ...row, name: e.target.value })} /></Field>
+                  <Field label="Designation"><Input value={row.designation} onChange={(e) => set({ ...row, designation: e.target.value })} placeholder="Homeowner, Edmonton" /></Field>
+                </div>
+                <Field label="Testimonial" required><Textarea value={row.text} onChange={(e) => set({ ...row, text: e.target.value })} /></Field>
+                <div className="adm-field-row">
+                  <Field label="Rating (1-5)"><Select value={row.rating} onChange={(e) => set({ ...row, rating: +e.target.value })}>{[1,2,3,4,5].map((n) => <option key={n} value={n}>{'★'.repeat(n)} ({n})</option>)}</Select></Field>
+                  <Field label="Published"><Select value={row.published ? '1' : '0'} onChange={(e) => set({ ...row, published: e.target.value === '1' })}><option value="1">Yes</option><option value="0">No</option></Select></Field>
+                </div>
+                <ImagePicker value={row.image} onChange={(v) => set({ ...row, image: v })} label="Profile Image" />
+              </>
+            )}
+          />
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -757,27 +874,68 @@ function WebsiteImages() {
    ============================================================ */
 function Gallery({ go }) {
   const api = useApi();
-  const [projects, setProjects] = useState(null);
-  useEffect(() => { api('/admin/projects').then((d) => d.success && setProjects(d.data)); }, []);
-  if (!projects) return <div className="adm-panel"><TableSkeleton /></div>;
+  const [backendProjects, setBackendProjects] = useState(null);
+  const [filter, setFilter] = useState('all');
+  const [preview, setPreview] = useState(null);
+
+  useEffect(() => { api('/admin/projects').then((d) => setBackendProjects(d.success ? d.data : [])); }, []);
+  const gallery = backendProjects ? getAllGalleryImages(backendProjects) : null;
+  if (!gallery) return <div className="adm-panel"><TableSkeleton /></div>;
+
+  const categories = [...new Set(gallery.map((g) => g.category))];
+  const filtered = filter === 'all' ? gallery : gallery.filter((g) => g.category === filter);
+
   return (
     <>
-      <div className="adm-page-head"><div><h1>Gallery</h1><p>Featured project showcase</p></div>
-        <button className="adm-btn adm-btn-primary" onClick={() => go('projects')}>Manage Projects →</button></div>
-      <div className="adm-panel">
-        <div className="adm-panel-body">
-          {projects.filter((p) => p.image).length === 0 ? <Empty icon="▦" title="No gallery images yet" sub="Add project images to populate the gallery." /> : (
-            <div className="adm-media-grid">
-              {projects.filter((p) => p.image).map((p) => (
-                <div key={p.id} className="adm-media-card">
-                  <div className="adm-media-img"><img src={p.image} alt={p.title} /></div>
-                  <div className="adm-media-info"><div className="adm-media-name">{p.title || 'Untitled'}</div><div className="adm-media-meta">{p.category || 'Project'}</div></div>
-                </div>
-              ))}
-            </div>
-          )}
+      <div className="adm-page-head">
+        <div><h1>Gallery</h1><p>All images used across the website ({gallery.length} images)</p></div>
+        <button className="adm-btn" onClick={() => go('projects')}>Manage Projects →</button>
+      </div>
+
+      <div className="adm-toolbar">
+        <div className="adm-tabs">
+          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>All ({gallery.length})</button>
+          {categories.map((cat) => (
+            <button key={cat} className={filter === cat ? 'active' : ''} onClick={() => setFilter(cat)}>{cat} ({gallery.filter((g) => g.category === cat).length})</button>
+          ))}
         </div>
       </div>
+
+      <div className="adm-panel">
+        <div className="adm-panel-body">
+          <div className="adm-media-grid">
+            {filtered.map((img) => (
+              <div key={img.id} className="adm-media-card" onClick={() => setPreview(img)} style={{ cursor: 'pointer' }}>
+                <div className="adm-media-img">
+                  <img src={img.image} alt={img.title} loading="lazy" onError={(e) => { e.target.style.opacity = .3; }} />
+                </div>
+                <div className="adm-media-info">
+                  <div className="adm-media-name">{img.title}</div>
+                  <div className="adm-media-meta">{img.page} → {img.section}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Modal open={!!preview} onClose={() => setPreview(null)} title={preview?.title || 'Image'}
+        footer={<button className="adm-btn" onClick={() => setPreview(null)}>Close</button>}>
+        {preview && (
+          <div>
+            <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: '1.25rem' }}><img src={preview.image} alt="" style={{ width: '100%', maxHeight: 400, objectFit: 'contain' }} /></div>
+            <div className="adm-field-row">
+              <Field label="Title"><Input value={preview.title} readOnly /></Field>
+              <Field label="Category"><Input value={preview.category} readOnly /></Field>
+            </div>
+            <div className="adm-field-row">
+              <Field label="Page"><Input value={preview.page} readOnly /></Field>
+              <Field label="Section"><Input value={preview.section} readOnly /></Field>
+            </div>
+            <Field label="Image Path"><Input value={preview.image} readOnly /></Field>
+          </div>
+        )}
+      </Modal>
     </>
   );
 }
