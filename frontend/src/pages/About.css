@@ -122,7 +122,7 @@
 
 .abt-values {
   padding: 8rem 0;
-  background: var(--off);
+  background: var(--white);
 }
 .abt-values .head {
   text-align: center;
@@ -141,20 +141,40 @@
 .abt-values-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2.5rem;
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 .abt-value {
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(28,26,23,.1);
+  padding: 2.5rem 2rem;
+  background: var(--off);
+  border: 1px solid rgba(28,26,23,.06);
+  position: relative;
+  transition: transform .4s ease, box-shadow .4s ease, border-color .4s ease;
+}
+.abt-value:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(28,26,23,.08);
+  border-color: rgba(191,163,95,.25);
+}
+.abt-value::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 40px; height: 2px;
+  background: var(--gold);
+  opacity: .6;
 }
 .abt-value h3 {
-  font-size: 1.3rem;
-  margin-bottom: .6rem;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  margin-bottom: .75rem;
   color: var(--charcoal);
 }
 .abt-value p {
-  font-size: .9rem;
-  line-height: 1.65;
+  font-size: .88rem;
+  line-height: 1.7;
   color: rgba(28,26,23,.6);
   margin: 0;
 }
@@ -361,7 +381,9 @@
   }
   .abt-values-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
+  .abt-value { padding: 2rem 1.5rem; }
   .abt-approach-list {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -379,6 +401,7 @@
   .abt-values-grid,
   .abt-areas-grid,
   .abt-approach-list { grid-template-columns: 1fr; }
+  .abt-value { padding: 1.75rem 1.5rem; }
   .abt-who img,
   .abt-founder img { min-height: 320px; }
 }
