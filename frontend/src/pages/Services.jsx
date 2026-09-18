@@ -1,7 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useContent, imageUrl } from '../hooks/useContent.js';
 import './Services.css';
 
 export default function Services() {
+  const { data: services, loading } = useContent('services');
+  const pageRef = useRef(null);
+
   useEffect(() => {
     const reveals = document.querySelectorAll('.ser-reveal');
     const io = new IntersectionObserver((entries) => {
@@ -14,151 +18,137 @@ export default function Services() {
     }, { threshold: 0.1 });
     reveals.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [services, loading]);
 
-  const html = `
-    <section class="ser-hero">
-      <div class="ser-hero-inner ser-reveal">
-        <p class="eyebrow">Services</p>
-        <h1>Services</h1>
-        <p>Craftsmanship, precision, and thoughtful solutions for every space.</p>
-        <a href="#/contact" class="btn-primary">Start a Project <span style="font-size:1.1rem;">→</span></a>
-      </div>
-    </section>
+  // Default static services (shown if backend has no data yet)
+  const fallbackServices = [
+    { title: 'Tile & Flooring', summary: 'Professional installation for all tile formats and flooring applications.', icon: '01' },
+    { title: 'Bathroom Upgrades', summary: 'Complete bathroom improvements with quality finishes and detailed execution.', icon: '02' },
+    { title: 'Kitchen Backsplash', summary: 'Custom backsplash installation designed to complement your kitchen.', icon: '03' },
+    { title: 'Custom Showers', summary: 'Custom shower installations with detailed tile work and waterproofing.', icon: '04' },
+    { title: 'Waterproofing', summary: 'Reliable waterproofing solutions designed for long-lasting performance.', icon: '05' },
+    { title: 'Fireplace', summary: 'Custom fireplace tile work and feature installations.', icon: '06' },
+    { title: 'Home Repairs', summary: 'Practical repairs and improvements for residential spaces.', icon: '07' },
+    { title: 'Appliance Installations', summary: 'Professional appliance installation and related home improvements.', icon: '08' },
+  ];
 
-    <section class="ser-intro">
-      <div class="container ser-intro-grid">
-        <div class="ser-reveal">
-          <img src="/images/IMG_0308.jpg" alt="Modern kitchen interior" loading="lazy" decoding="async">
-        </div>
-        <div class="ser-reveal">
-          <h2>Built around quality.</h2>
-          <p>From detailed tile installation to complete home improvements, we bring careful planning, quality materials, and precise craftsmanship to every project.</p>
-        </div>
-      </div>
-    </section>
+  const activeServices = (services && services.length > 0) ? services : fallbackServices;
 
-    <section class="ser-main">
-      <div class="container">
-        <div class="head ser-reveal">
-          <h2>What We Do</h2>
-          <div class="line"></div>
+  return (
+    <div className="services-page" ref={pageRef}>
+      <section className="ser-hero">
+        <div className="ser-hero-inner ser-reveal">
+          <p className="eyebrow">Services</p>
+          <h1>Services</h1>
+          <p>Craftsmanship, precision, and thoughtful solutions for every space.</p>
+          <a href="#/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
         </div>
-        <div class="ser-services-grid">
-          <article class="ser-service ser-reveal">
-            <p class="num">01 — Tile &amp; Flooring</p>
-            <h3>Tile &amp; Flooring</h3>
-            <p>Professional installation for all tile formats and flooring applications.</p>
-          </article>
-          <article class="ser-service ser-reveal">
-            <p class="num">02 — Bathroom Upgrades</p>
-            <h3>Bathroom Upgrades</h3>
-            <p>Complete bathroom improvements with quality finishes and detailed execution.</p>
-          </article>
-          <article class="ser-service ser-reveal">
-            <p class="num">03 — Kitchen Backsplash</p>
-            <h3>Kitchen Backsplash</h3>
-            <p>Custom backsplash installation designed to complement your kitchen.</p>
-          </article>
-          <article class="ser-service ser-reveal">
-            <p class="num">04 — Custom Showers</p>
-            <h3>Custom Showers</h3>
-            <p>Custom shower installations with detailed tile work and waterproofing.</p>
-          </article>
-          <article class="ser-service ser-reveal">
-            <p class="num">05 — Waterproofing</p>
-            <h3>Waterproofing</h3>
-            <p>Reliable waterproofing solutions designed for long-lasting performance.</p>
-          </article>
-          <article class="ser-service ser-reveal">
-            <p class="num">06 — Fireplace</p>
-            <h3>Fireplace</h3>
-            <p>Custom fireplace tile work and feature installations.</p>
-          </article>
-          <article class="ser-service ser-reveal">
-            <p class="num">07 — Home Repairs</p>
-            <h3>Home Repairs</h3>
-            <p>Practical repairs and improvements for residential spaces.</p>
-          </article>
-          <article class="ser-service ser-reveal">
-            <p class="num">08 — Appliance Installations</p>
-            <h3>Appliance Installations</h3>
-            <p>Professional appliance installation and related home improvements.</p>
-          </article>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="ser-specialty">
-      <div class="container">
-        <div class="head ser-reveal">
-          <h2>The Details Matter.</h2>
-          <div class="line"></div>
-        </div>
-        <div class="ser-specialty-grid">
-          <article class="ser-specialty-card ser-reveal">
-            <div class="thumb">
-              <img src="/images/IMG_9381.jpg" alt="45 degree tile cuts" loading="lazy" decoding="async">
-            </div>
-            <div class="body">
-              <h3>45° Angles</h3>
-              <p>Precise cuts and professional finishing.</p>
-            </div>
-          </article>
-          <article class="ser-specialty-card ser-reveal">
-            <div class="thumb">
-              <img src="/images/IMG_9389.jpg" alt="Different tile formats" loading="lazy" decoding="async">
-            </div>
-            <div class="body">
-              <h3>All Tile Formats</h3>
-              <p>Experience with different tile sizes, shapes, and formats.</p>
-            </div>
-          </article>
-          <article class="ser-specialty-card ser-reveal">
-            <div class="thumb">
-              <img src="/images/IMG_9446.jpg" alt="Custom fireplace finish" loading="lazy" decoding="async">
-            </div>
-            <div class="body">
-              <h3>Custom Finishes</h3>
-              <p>Detailed solutions tailored to each project.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="ser-areas">
-      <div class="container ser-areas-grid">
-        <a href="#/residential" class="ser-area ser-reveal">
-          <img src="/images/IMG_9687.jpg" alt="Residential space" loading="lazy" decoding="async">
-          <div class="ser-area-content">
-            <h3>Residential</h3>
-            <p>Homes, renovations, bathrooms, kitchens, flooring, and custom spaces.</p>
-            <span>Explore Residential →</span>
+      <section className="ser-intro">
+        <div className="container ser-intro-grid">
+          <div className="ser-reveal">
+            <img src="/images/IMG_0308.jpg" alt="Modern kitchen interior" loading="lazy" decoding="async" />
           </div>
-        </a>
-        <a href="#/" class="ser-area ser-reveal">
-          <img src="/images/IMG_0212.jpg" alt="Commercial space" loading="lazy" decoding="async">
-          <div class="ser-area-content">
-            <h3>Commercial</h3>
-            <p>Professional tile, flooring, repairs, and installation solutions.</p>
-            <span>Explore Commercial →</span>
+          <div className="ser-reveal">
+            <h2>Built around quality.</h2>
+            <p>From detailed tile installation to complete home improvements, we bring careful planning, quality materials, and precise craftsmanship to every project.</p>
           </div>
-        </a>
-      </div>
-    </section>
-
-    <section class="ser-cta">
-      <div class="container ser-reveal">
-        <h2>Have a project in mind?</h2>
-        <p>Tell us what you're planning. Let's create a space built with precision and care.</p>
-        <div class="actions">
-          <a href="#/contact" class="btn-primary">Start a Project <span style="font-size:1.1rem;">→</span></a>
-          <a href="#/contact" class="btn-outline">Contact Us <span style="font-size:1.1rem;">→</span></a>
         </div>
-      </div>
-    </section>
-  `;
+      </section>
 
-  return <div className="services-page" dangerouslySetInnerHTML={{ __html: html }} />;
+      <section className="ser-main">
+        <div className="container">
+          <div className="head ser-reveal">
+            <h2>What We Do</h2>
+            <div className="line"></div>
+          </div>
+          <div className="ser-services-grid">
+            {activeServices.map((s, i) => (
+              <article className="ser-service ser-reveal" key={s.id || i}>
+                {s.image && (
+                  <div style={{ marginBottom: '1rem', borderRadius: '8px', overflow: 'hidden' }}>
+                    <img src={imageUrl(s.image)} alt={s.title} loading="lazy" decoding="async" style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
+                  </div>
+                )}
+                <p className="num">{String(i + 1).padStart(2, '0')} — {s.icon && s.icon.length <= 3 ? s.icon : s.title}</p>
+                <h3>{s.title}</h3>
+                <p>{s.summary || s.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="ser-specialty">
+        <div className="container">
+          <div className="head ser-reveal">
+            <h2>The Details Matter.</h2>
+            <div className="line"></div>
+          </div>
+          <div className="ser-specialty-grid">
+            <article className="ser-specialty-card ser-reveal">
+              <div className="thumb">
+                <img src="/images/IMG_9381.jpg" alt="45 degree tile cuts" loading="lazy" decoding="async" />
+              </div>
+              <div className="body">
+                <h3>45° Angles</h3>
+                <p>Precise cuts and professional finishing.</p>
+              </div>
+            </article>
+            <article className="ser-specialty-card ser-reveal">
+              <div className="thumb">
+                <img src="/images/IMG_9389.jpg" alt="Different tile formats" loading="lazy" decoding="async" />
+              </div>
+              <div className="body">
+                <h3>All Tile Formats</h3>
+                <p>Experience with different tile sizes, shapes, and formats.</p>
+              </div>
+            </article>
+            <article className="ser-specialty-card ser-reveal">
+              <div className="thumb">
+                <img src="/images/IMG_9446.jpg" alt="Custom fireplace finish" loading="lazy" decoding="async" />
+              </div>
+              <div className="body">
+                <h3>Custom Finishes</h3>
+                <p>Detailed solutions tailored to each project.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="ser-areas">
+        <div className="container ser-areas-grid">
+          <a href="#/residential" className="ser-area ser-reveal">
+            <img src="/images/IMG_9687.jpg" alt="Residential space" loading="lazy" decoding="async" />
+            <div className="ser-area-content">
+              <h3>Residential</h3>
+              <p>Homes, renovations, bathrooms, kitchens, flooring, and custom spaces.</p>
+              <span>Explore Residential →</span>
+            </div>
+          </a>
+          <a href="#/" className="ser-area ser-reveal">
+            <img src="/images/IMG_0212.jpg" alt="Commercial space" loading="lazy" decoding="async" />
+            <div className="ser-area-content">
+              <h3>Commercial</h3>
+              <p>Professional tile, flooring, repairs, and installation solutions.</p>
+              <span>Explore Commercial →</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section className="ser-cta">
+        <div className="container ser-reveal">
+          <h2>Have a project in mind?</h2>
+          <p>Tell us what you're planning. Let's create a space built with precision and care.</p>
+          <div className="actions">
+            <a href="#/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
+            <a href="#/contact" className="btn-outline">Contact Us <span style={{ fontSize: '1.1rem' }}>→</span></a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

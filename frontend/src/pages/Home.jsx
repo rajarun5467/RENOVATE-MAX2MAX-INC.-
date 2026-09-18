@@ -1,5 +1,8 @@
+import Testimonials from '../components/Testimonials.jsx';
+
 export default function Home() {
   return (
+    <div>
     <div dangerouslySetInnerHTML={{ __html: `
 <section class="hero" id="home">
   <div class="hero-inner">
@@ -360,5 +363,7 @@ export default function Home() {
   </div>
 </section>
     ` }} />
+    <Testimonials />
+    </div>
   );
 }
