@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import API from '../config.js';
 import './admin.css';
 import { ToastProvider, ConfirmProvider, useToast, useConfirm, Modal, Badge, Field, Input, Textarea, Select, Skeleton, TableSkeleton, Empty, Pagination, ImagePicker, useApi, timeAgo, fmtSize } from './ui.jsx';
+import { IMAGE_USAGE, EXTERNAL_IMAGES, getUsage, isUsed } from './imageUsage.js';
 
 window.__ADM_API__ = API;
 const API_ORIGIN = API.replace(/\/api$/, '');
@@ -550,20 +551,31 @@ function Gallery({ go }) {
 /* ============================================================
    MEDIA LIBRARY
    ============================================================ */
+/* ============================================================
+   MEDIA LIBRARY (static + uploaded + external)
+   ============================================================ */
 function Media() {
   const api = useApi();
   const toast = useToast();
   const confirm = useConfirm();
-  const [images, setImages] = useState(null);
+  const [uploaded, setUploaded] = useState(null);
+  const [staticImages, setStaticImages] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [drag, setDrag] = useState(false);
+  const [search, setSearch] = useState('');
+  const [sourceFilter, setSourceFilter] = useState('all');
+  const [usageFilter, setUsageFilter] = useState('all');
+  const [preview, setPreview] = useState(null);
   const fileRef = useRef(null);
 
   const load = useCallback(async () => {
     const data = await api('/admin/images');
-    if (data.success) setImages(data.images);
+    if (data.success) setUploaded(data.images);
   }, [api]);
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+    fetch('/images-manifest.json').then((r) => r.json()).then(setStaticImages).catch(() => setStaticImages([]));
+  }, [load]);
 
   const upload = async (files) => {
     if (!files || !files.length) return;
@@ -574,35 +586,147 @@ function Media() {
     }
     setUploading(false); toast('Upload complete', 'success'); load();
   };
-  const del = async (name) => {
-    if (!await confirm({ title: 'Delete image', message: 'This permanently deletes the image.', danger: true, confirmText: 'Delete' })) return;
+
+  const delUploaded = async (name) => {
+    if (!await confirm({ title: 'Delete uploaded image', message: 'This permanently deletes the image from the server.', danger: true, confirmText: 'Delete' })) return;
     await api(`/admin/images/${name}`, { method: 'DELETE' });
     toast('Image deleted', 'success'); load();
   };
-  const copy = (url) => { navigator.clipboard.writeText(`${API_ORIGIN}${url}`); toast('URL copied', 'success'); };
+
+  const copyUrl = (url) => { navigator.clipboard.writeText(url); toast('URL copied', 'success'); };
+
+  // Build unified image list
+  const allImages = [];
+  if (staticImages) staticImages.forEach((img) => {
+    const usage = getUsage(img.name);
+    allImages.push({
+      key: `static:${img.name}`,
+      name: img.name,
+      url: img.path,
+      size: img.size,
+      source: 'static',
+      sourceLabel: 'Static Asset',
+      usage,
+      used: usage.length > 0,
+      deletable: false,
+    });
+  });
+  if (uploaded) uploaded.forEach((img) => {
+    allImages.push({
+      key: `uploaded:${img.name}`,
+      name: img.name,
+      url: `${API_ORIGIN}${img.url}`,
+      size: img.size,
+      source: 'uploaded',
+      sourceLabel: 'Uploaded',
+      uploadedAt: img.uploadedAt,
+      usage: [],
+      used: false,
+      deletable: true,
+    });
+  });
+  EXTERNAL_IMAGES.forEach((ext, i) => {
+    allImages.push({
+      key: `external:${i}`,
+      name: ext.url.split('/').pop().split('?')[0] || 'external',
+      url: ext.url,
+      size: null,
+      source: 'external',
+      sourceLabel: 'External (Unsplash)',
+      usage: [{ page: ext.page, section: ext.section, type: ext.type }],
+      used: true,
+      deletable: false,
+    });
+  });
+
+  // Apply filters
+  const filtered = allImages.filter((img) => {
+    if (sourceFilter !== 'all' && img.source !== sourceFilter) return false;
+    if (usageFilter === 'used' && !img.used) return false;
+    if (usageFilter === 'unused' && img.used) return false;
+    if (search.trim() && !img.name.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  const counts = {
+    all: allImages.length,
+    static: allImages.filter((i) => i.source === 'static').length,
+    uploaded: allImages.filter((i) => i.source === 'uploaded').length,
+    external: allImages.filter((i) => i.source === 'external').length,
+    used: allImages.filter((i) => i.used).length,
+    unused: allImages.filter((i) => !i.used).length,
+  };
+
+  const loading = !uploaded || !staticImages;
 
   return (
     <>
-      <div className="adm-page-head"><div><h1>Media Library</h1><p>Upload and manage images</p></div></div>
+      <div className="adm-page-head">
+        <div><h1>Media Library</h1><p>All website images — static assets, uploads, and external</p></div>
+        <div className="adm-page-actions">
+          <button className="adm-btn adm-btn-primary" onClick={() => fileRef.current?.click()}>+ Upload</button>
+        </div>
+      </div>
+
+      {/* Stats strip */}
+      <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+        <span className="adm-chip"><strong>{counts.all}</strong>&nbsp;total</span>
+        <span className="adm-chip">Static: {counts.static}</span>
+        <span className="adm-chip">Uploaded: {counts.uploaded}</span>
+        <span className="adm-chip">External: {counts.external}</span>
+        <span className="adm-chip">Used: {counts.used}</span>
+        <span className="adm-chip">Unused: {counts.unused}</span>
+      </div>
+
+      {/* Upload zone */}
       <div className={`adm-dropzone ${drag ? 'over' : ''}`} onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={(e) => { e.preventDefault(); setDrag(false); upload(e.dataTransfer.files); }} onClick={() => fileRef.current?.click()}>
         <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={(e) => { upload(e.target.files); e.target.value = ''; }} />
         <div className="adm-drop-ico">⬆</div>
         <p>{uploading ? 'Uploading…' : 'Click or drag images to upload'}</p>
         <span>JPG, PNG, WebP · max 15MB</span>
       </div>
+
+      {/* Filters */}
+      <div className="adm-toolbar">
+        <div className="adm-search">
+          <span className="adm-search-ico">⌕</span>
+          <input placeholder="Search by filename…" value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+        <div className="adm-tabs">
+          {[['all', 'All'], ['static', 'Static'], ['uploaded', 'Uploaded'], ['external', 'External']].map(([v, l]) => (
+            <button key={v} className={sourceFilter === v ? 'active' : ''} onClick={() => setSourceFilter(v)}>{l}</button>
+          ))}
+        </div>
+        <div className="adm-tabs">
+          {[['all', 'All'], ['used', 'Used'], ['unused', 'Unused']].map(([v, l]) => (
+            <button key={v} className={usageFilter === v ? 'active' : ''} onClick={() => setUsageFilter(v)}>{l}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Grid */}
       <div className="adm-panel">
         <div className="adm-panel-body">
-          {!images ? <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '1rem' }}>{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} h={180} r={10} />)}</div> :
-           images.length === 0 ? <Empty icon="☵" title="No images uploaded yet" sub="Upload images using the area above." /> : (
+          {loading ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '1rem' }}>
+              {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} h={180} r={10} />)}
+            </div>
+          ) : filtered.length === 0 ? (
+            <Empty icon="☵" title="No images found" sub="Try adjusting your filters." />
+          ) : (
             <div className="adm-media-grid">
-              {images.map((img) => (
-                <div key={img.name} className="adm-media-card">
-                  <div className="adm-media-img"><img src={`${API_ORIGIN}${img.url}`} alt={img.name} loading="lazy" /></div>
-                  <div className="adm-media-info"><div className="adm-media-name">{img.name}</div><div className="adm-media-meta">{fmtSize(img.size)} · {timeAgo(img.uploadedAt)}</div></div>
-                  <div className="adm-media-actions">
-                    <button onClick={() => copy(img.url)}>Copy URL</button>
-                    <a href={`${API_ORIGIN}${img.url}`} target="_blank" rel="noreferrer">Open</a>
-                    <button className="danger" onClick={() => del(img.name)}>Delete</button>
+              {filtered.map((img) => (
+                <div key={img.key} className="adm-media-card" onClick={() => setPreview(img)} style={{ cursor: 'pointer' }}>
+                  <div className="adm-media-img">
+                    <img src={img.url} alt={img.name} loading="lazy" onError={(e) => { e.target.style.opacity = .3; e.target.style.background = 'var(--surface-2)'; }} />
+                    <span style={{ position: 'absolute', top: 6, left: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: img.source === 'static' ? 'var(--accent-soft)' : img.source === 'uploaded' ? 'var(--info-soft)' : '#f4f4f5', color: img.source === 'static' ? 'var(--accent)' : img.source === 'uploaded' ? 'var(--info)' : 'var(--muted)' }}>{img.sourceLabel}</span>
+                    {img.used && <span style={{ position: 'absolute', top: 6, right: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: 'var(--success-soft)', color: 'var(--success)' }}>Used</span>}
+                  </div>
+                  <div className="adm-media-info">
+                    <div className="adm-media-name" title={img.name}>{img.name}</div>
+                    <div className="adm-media-meta">
+                      {img.size ? fmtSize(img.size) : '—'} · {img.usage.length} usage{img.usage.length !== 1 ? 's' : ''}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -610,6 +734,53 @@ function Media() {
           )}
         </div>
       </div>
+
+      {/* Preview modal */}
+      <Modal open={!!preview} onClose={() => setPreview(null)} title={preview?.name || 'Image'} size="lg"
+        footer={preview && (
+          <>
+            <button className="adm-btn" onClick={() => copyUrl(preview.url)}>Copy URL</button>
+            <a className="adm-btn" href={preview.url} target="_blank" rel="noreferrer">Open Original</a>
+            {preview.deletable && <button className="adm-btn adm-btn-danger" onClick={() => { delUploaded(preview.name); setPreview(null); }}>Delete</button>}
+            <button className="adm-btn" onClick={() => setPreview(null)}>Close</button>
+          </>
+        )}>
+        {preview && (
+          <div>
+            <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: '1.25rem', background: 'var(--surface-2)' }}>
+              <img src={preview.url} alt={preview.name} style={{ width: '100%', maxHeight: 400, objectFit: 'contain', display: 'block' }} />
+            </div>
+            <div className="adm-field-row">
+              <Field label="File Name"><Input value={preview.name} readOnly /></Field>
+              <Field label="Source"><Input value={preview.sourceLabel} readOnly /></Field>
+            </div>
+            <div className="adm-field-row">
+              <Field label="URL"><Input value={preview.url} readOnly /></Field>
+              <Field label="File Size"><Input value={preview.size ? fmtSize(preview.size) : 'External'} readOnly /></Field>
+            </div>
+            <Field label="Usage Locations">
+              {preview.usage.length === 0 ? (
+                <div className="adm-muted" style={{ padding: '.5rem 0' }}>This image is not currently referenced by any frontend page. It may be unused or reserved for future use.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+                  {preview.usage.map((u, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.5rem', padding: '.5rem .75rem', background: 'var(--surface-2)', borderRadius: 7, fontSize: '.85rem' }}>
+                      <span className="adm-badge published dot">{u.page}</span>
+                      <span style={{ color: 'var(--text-2)' }}>{u.section}</span>
+                      <span className="adm-chip" style={{ marginLeft: 'auto' }}>{u.type}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Field>
+            {!preview.deletable && preview.source === 'static' && (
+              <div className="adm-muted" style={{ fontSize: '.82rem', padding: '.5rem .75rem', background: 'var(--warn-soft)', borderRadius: 7, marginTop: '.5rem' }}>
+                ⚠ Static assets cannot be deleted from the admin panel — they are part of the codebase. Remove the file from <code>public/images/</code> and redeploy to delete.
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
     </>
   );
 }
