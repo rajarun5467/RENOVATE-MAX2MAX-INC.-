@@ -7,7 +7,7 @@ import Residential from './pages/Residential.jsx';
 import Services from './pages/Services.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
-import Admin from './pages/Admin.jsx';
+import Admin from './admin/Admin.jsx';
 
 function Layout() {
   const location = useLocation();
