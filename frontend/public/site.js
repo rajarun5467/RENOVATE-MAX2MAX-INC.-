@@ -1,4 +1,4 @@
-window.addEventListener('load', function(){
+document.addEventListener('DOMContentLoaded', function(){
   const reveals = document.querySelectorAll('.reveal');
   const quoteForm = document.getElementById('quoteForm');
 

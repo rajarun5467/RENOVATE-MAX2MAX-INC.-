@@ -338,7 +338,7 @@ export default function Home() {
         <p><a href="mailto:Renovatemax2max@gmail.com">Renovatemax2max@gmail.com</a></p>
         <p>Service Area: Edmonton and surrounding areas</p>
       </div>
-      <form class="form reveal" id="quoteForm">
+      <form class="form reveal" id="quoteForm" onsubmit="return false">
         <input type="text" name="name" placeholder="Your name" required>
         <input type="tel" name="phone" placeholder="Phone number" required>
         <input type="email" name="email" placeholder="Email address">
