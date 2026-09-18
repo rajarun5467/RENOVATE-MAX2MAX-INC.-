@@ -41,7 +41,7 @@ export default function Services() {
           <p className="eyebrow">Services</p>
           <h1>Services</h1>
           <p>Craftsmanship, precision, and thoughtful solutions for every space.</p>
-          <a href="#/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
+          <a href="/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
         </div>
       </section>
 
@@ -120,7 +120,7 @@ export default function Services() {
 
       <section className="ser-areas">
         <div className="container ser-areas-grid">
-          <a href="#/residential" className="ser-area ser-reveal">
+          <a href="/residential" className="ser-area ser-reveal">
             <img src="/images/IMG_9687.jpg" alt="Residential space" loading="lazy" decoding="async" />
             <div className="ser-area-content">
               <h3>Residential</h3>
@@ -128,7 +128,7 @@ export default function Services() {
               <span>Explore Residential →</span>
             </div>
           </a>
-          <a href="#/" className="ser-area ser-reveal">
+          <a href="/" className="ser-area ser-reveal">
             <img src="/images/IMG_0212.jpg" alt="Commercial space" loading="lazy" decoding="async" />
             <div className="ser-area-content">
               <h3>Commercial</h3>
@@ -144,8 +144,8 @@ export default function Services() {
           <h2>Have a project in mind?</h2>
           <p>Tell us what you're planning. Let's create a space built with precision and care.</p>
           <div className="actions">
-            <a href="#/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
-            <a href="#/contact" className="btn-outline">Contact Us <span style={{ fontSize: '1.1rem' }}>→</span></a>
+            <a href="/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
+            <a href="/contact" className="btn-outline">Contact Us <span style={{ fontSize: '1.1rem' }}>→</span></a>
           </div>
         </div>
       </section>

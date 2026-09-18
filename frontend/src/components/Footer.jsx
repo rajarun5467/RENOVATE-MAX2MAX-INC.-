@@ -15,10 +15,10 @@ export default function Footer() {
       <div>
         <h4>Navigate</h4>
         <ul class="footer-nav">
-          <li><a href="#/" class="link-underline">Home</a></li>
-          <li><a href="#/about" class="link-underline">About</a></li>
-          <li><a href="#/services" class="link-underline">Services</a></li>
-          <li><a href="#/contact" class="link-underline">Contact</a></li>
+          <li><a href="/" class="link-underline">Home</a></li>
+          <li><a href="/about" class="link-underline">About</a></li>
+          <li><a href="/services" class="link-underline">Services</a></li>
+          <li><a href="/contact" class="link-underline">Contact</a></li>
         </ul>
       </div>
       <div>
@@ -44,7 +44,7 @@ export default function Footer() {
 
 <div class="mobile-bar">
   <a href="tel:+14378698609">Call Now</a>
-  <a href="#/contact">Get a Quote</a>
+  <a href="/contact">Get a Quote</a>
 </div>
 
 <a href="https://wa.me/14378698609" target="_blank" rel="noreferrer" class="whatsapp" aria-label="Chat on WhatsApp">

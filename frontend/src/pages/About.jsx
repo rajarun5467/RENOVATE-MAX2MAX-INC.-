@@ -88,7 +88,7 @@ export default function About() {
           <div class="line"></div>
         </div>
         <div class="abt-areas-grid">
-          <a href="#/residential" class="abt-area abt-reveal">
+          <a href="/residential" class="abt-area abt-reveal">
             <img src="/images/IMG_0447.jpg" alt="Residential project" loading="lazy" decoding="async">
             <div class="abt-area-content">
               <h3>Residential</h3>
@@ -96,7 +96,7 @@ export default function About() {
               <span>Explore →</span>
             </div>
           </a>
-          <a href="#/" class="abt-area abt-reveal">
+          <a href="/" class="abt-area abt-reveal">
             <img src="/images/IMG_9415.jpg" alt="Commercial project" loading="lazy" decoding="async">
             <div class="abt-area-content">
               <h3>Commercial</h3>
@@ -142,8 +142,8 @@ export default function About() {
         <h2>Let's build something great.</h2>
         <p>Have a renovation, installation, or home improvement project in mind? We'd love to hear about it.</p>
         <div class="actions">
-          <a href="#/contact" class="btn-primary">Start a Project <span style="font-size:1.1rem;">→</span></a>
-          <a href="#/contact" class="btn-outline">Contact Us <span style="font-size:1.1rem;">→</span></a>
+          <a href="/contact" class="btn-primary">Start a Project <span style="font-size:1.1rem;">→</span></a>
+          <a href="/contact" class="btn-outline">Contact Us <span style="font-size:1.1rem;">→</span></a>
         </div>
       </div>
     </section>

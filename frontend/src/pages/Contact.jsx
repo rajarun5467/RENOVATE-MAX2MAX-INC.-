@@ -155,16 +155,16 @@ export default function Contact() {
             <h2>What Can We Help With?</h2>
           </div>
           <nav className="ct-links-list ct-reveal">
-            <a href="#/services">Tile &amp; Flooring</a>
-            <a href="#/services">Bathroom Upgrades</a>
-            <a href="#/services">Kitchen Backsplash</a>
-            <a href="#/services">Tile Installation</a>
-            <a href="#/services">Waterproofing</a>
-            <a href="#/services">Custom Shower</a>
-            <a href="#/services">Fireplace</a>
-            <a href="#/services">45° Angles</a>
-            <a href="#/services">Home Repairs</a>
-            <a href="#/services">Appliance Installations</a>
+            <a href="/services">Tile &amp; Flooring</a>
+            <a href="/services">Bathroom Upgrades</a>
+            <a href="/services">Kitchen Backsplash</a>
+            <a href="/services">Tile Installation</a>
+            <a href="/services">Waterproofing</a>
+            <a href="/services">Custom Shower</a>
+            <a href="/services">Fireplace</a>
+            <a href="/services">45° Angles</a>
+            <a href="/services">Home Repairs</a>
+            <a href="/services">Appliance Installations</a>
           </nav>
         </div>
       </section>

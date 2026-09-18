@@ -39,7 +39,7 @@ function Login({ onLogin }) {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" autoFocus />
         <button type="submit" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button>
         {err && <div className="adm-login-err">{err}</div>}
-        <a href="#/" className="adm-login-back">← Back to website</a>
+        <a href="/" className="adm-login-back">← Back to website</a>
       </form>
     </div>
   );
@@ -96,7 +96,7 @@ function Layout({ view, setView, collapsed, setCollapsed, onLogout, children }) 
           ))}
         </nav>
         <div className="adm-side-foot">
-          <a href="#/" className="adm-side-link"><span className="adm-side-ico">↗</span><span>View Website</span></a>
+          <a href="/" className="adm-side-link"><span className="adm-side-ico">↗</span><span>View Website</span></a>
           <button className="adm-side-link" onClick={onLogout}><span className="adm-side-ico">⏻</span><span>Logout</span></button>
         </div>
       </aside>
@@ -108,7 +108,7 @@ function Layout({ view, setView, collapsed, setCollapsed, onLogout, children }) 
           <div className="adm-crumb">Admin <span>›</span> <b>{current?.label}</b></div>
           <div className="adm-header-spacer" />
           <div className="adm-header-actions">
-            <a href="#/" className="adm-icon-btn" title="View website" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>↗</a>
+            <a href="/" className="adm-icon-btn" title="View website" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>↗</a>
             <div className="adm-avatar" title="Administrator">A</div>
           </div>
         </header>

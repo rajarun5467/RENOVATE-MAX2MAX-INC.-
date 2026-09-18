@@ -23,8 +23,8 @@ export default function Philosophy() {
         <h1>Our Philosophy</h1>
         <p>We believe that great spaces are not just built; they are considered. Every material, every joint, and every finish is a chance to create something lasting, meaningful, and quietly beautiful.</p>
         <div class="actions">
-          <a href="#/contact" class="btn-primary">Discover Our Approach <span style="font-size:1.1rem;">→</span></a>
-          <a href="#/residential" class="btn-outline">Explore Our Work <span style="font-size:1.1rem;">→</span></a>
+          <a href="/contact" class="btn-primary">Discover Our Approach <span style="font-size:1.1rem;">→</span></a>
+          <a href="/residential" class="btn-outline">Explore Our Work <span style="font-size:1.1rem;">→</span></a>
         </div>
       </div>
     </section>
@@ -147,8 +147,8 @@ export default function Philosophy() {
         <h2>Let's create something meaningful.</h2>
         <p>Have an idea, a vision, or a space that needs a new direction? Let's start a conversation and see where it takes us.</p>
         <div class="actions">
-          <a href="#/contact" class="btn-primary">Start a Conversation <span style="font-size:1.1rem;">→</span></a>
-          <a href="#/residential" class="btn-outline">View Our Work <span style="font-size:1.1rem;">→</span></a>
+          <a href="/contact" class="btn-primary">Start a Conversation <span style="font-size:1.1rem;">→</span></a>
+          <a href="/residential" class="btn-outline">View Our Work <span style="font-size:1.1rem;">→</span></a>
         </div>
       </div>
     </section>

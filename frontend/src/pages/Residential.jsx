@@ -37,7 +37,7 @@ export default function Residential() {
           <p>Thoughtfully crafted spaces, designed around the way you live.</p>
           <div className="actions">
             <a href="#res-work" className="btn-primary">View Our Work <span style={{ fontSize: '1.1rem' }}>→</span></a>
-            <a href="#/contact" className="btn-outline">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
+            <a href="/contact" className="btn-outline">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
           </div>
         </div>
       </section>
@@ -127,8 +127,8 @@ export default function Residential() {
           <h2>Ready to transform your home?</h2>
           <p>Let's turn your ideas into a space that feels uniquely yours.</p>
           <div className="actions">
-            <a href="#/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
-            <a href="#/contact" className="btn-outline">Contact Us <span style={{ fontSize: '1.1rem' }}>→</span></a>
+            <a href="/contact" className="btn-primary">Start a Project <span style={{ fontSize: '1.1rem' }}>→</span></a>
+            <a href="/contact" className="btn-outline">Contact Us <span style={{ fontSize: '1.1rem' }}>→</span></a>
           </div>
         </div>
       </section>
