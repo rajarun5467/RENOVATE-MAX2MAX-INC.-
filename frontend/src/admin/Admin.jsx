@@ -716,10 +716,24 @@ function Projects() {
 
       {/* View detail modal */}
       <Modal open={!!detail} onClose={() => setDetail(null)} title={detail?.title || 'Project'} size="lg"
-        footer={<button className="adm-btn" onClick={() => setDetail(null)}>Close</button>}>
+        footer={<>
+          <button className="adm-btn" onClick={() => setDetail(null)}>Close</button>
+          {detail?.source === 'database' && (
+            <button className="adm-btn adm-btn-primary" onClick={() => { setEditing({ ...detail }); setDetail(null); }}>Edit</button>
+          )}
+        </>}>
         {detail && (
           <div>
             {detail.image && <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: '1.25rem' }}><img src={detail.image} alt="" style={{ width: '100%', maxHeight: 350, objectFit: 'cover' }} /></div>}
+            {detail.gallery && detail.gallery.length > 0 && (
+              <Field label="Gallery">
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
+                  {detail.gallery.map((g, i) => (
+                    <img key={i} src={g} alt="" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--line)' }} />
+                  ))}
+                </div>
+              </Field>
+            )}
             <div className="adm-field-row">
               <Field label="Project Name"><Input value={detail.title} readOnly /></Field>
               <Field label="Category"><Input value={detail.category || '—'} readOnly /></Field>
