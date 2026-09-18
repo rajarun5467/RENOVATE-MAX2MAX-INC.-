@@ -1,5 +1,3 @@
-import Testimonials from '../components/Testimonials.jsx';
-
 export default function Home() {
   return (
     <div>
@@ -363,7 +361,6 @@ export default function Home() {
   </div>
 </section>
     ` }} />
-    <Testimonials />
     </div>
   );
 }
