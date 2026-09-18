@@ -757,6 +757,50 @@ function Projects() {
             </div>
             <Field label="Description"><Textarea value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} /></Field>
             <ImagePicker value={editing.image} onChange={(v) => setEditing({ ...editing, image: v })} label="Cover Image" />
+            {/* Gallery — additional images */}
+            <Field label="Gallery Images">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', marginBottom: '.5rem' }}>
+                {(editing.gallery || []).map((g, i) => (
+                  <div key={i} style={{ position: 'relative', width: 80, height: 80, borderRadius: 6, overflow: 'hidden', border: '1px solid var(--line)' }}>
+                    <img src={g} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <button
+                      type="button"
+                      onClick={() => setEditing({ ...editing, gallery: (editing.gallery || []).filter((_, j) => j !== i) })}
+                      style={{ position: 'absolute', top: 2, right: 2, width: 20, height: 20, borderRadius: '50%', background: 'rgba(0,0,0,.6)', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '.7rem', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >×</button>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: '.5rem' }}>
+                <Input
+                  placeholder="Image path or URL"
+                  id="gallery-input"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      const v = e.target.value.trim();
+                      if (v) {
+                        setEditing({ ...editing, gallery: [...(editing.gallery || []), v] });
+                        e.target.value = '';
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  className="adm-btn adm-btn-sm"
+                  onClick={() => {
+                    const inp = document.getElementById('gallery-input');
+                    const v = inp?.value?.trim();
+                    if (v) {
+                      setEditing({ ...editing, gallery: [...(editing.gallery || []), v] });
+                      inp.value = '';
+                    }
+                  }}
+                >Add</button>
+              </div>
+              <p className="adm-muted" style={{ marginTop: '.25rem' }}>Add image paths (e.g. /images/photo.jpg) or URLs. Press Enter or click Add.</p>
+            </Field>
             <label className="adm-checkbox"><input type="checkbox" checked={editing.published} onChange={(e) => setEditing({ ...editing, published: e.target.checked })} /> Published</label>
           </div>
         )}

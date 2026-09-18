@@ -1,7 +1,34 @@
+import WorkSection from '../components/WorkSection.jsx';
+
 export default function Home() {
-  return (
-    <div>
-    <div dangerouslySetInnerHTML={{ __html: `
+  // Fallback items for each category (used if backend has no projects)
+  const fallbackResidential = [
+    { title: 'Modern Bathroom', image: '/images/IMG_0573.JPG.jpeg', description: 'A complete modern bathroom with marble-look floor, double vanity and a clean, glass shower.' },
+    { title: 'Open Kitchen', image: '/images/IMG_0595.JPG.jpeg', description: 'A bright open kitchen and living area finished with large-format tile, warm cabinetry and clean sightlines.' },
+    { title: 'Custom Shower', image: '/images/IMG_9545.jpg', description: 'Frameless glass and a recessed tile niche, finished with mitered edges for a precise, high-end look.' },
+  ];
+  const fallbackTiles = [
+    { title: 'Patterned Hallway', image: '/images/IMG_9389.jpg', description: 'Hexagon tile flooring laid in a hallway, creating visual rhythm and long-term durability.' },
+    { title: 'Large-Format Floor', image: '/images/IMG_9415.jpg', description: 'Large-format grey tile flooring with clean grout lines and a professional finish.' },
+    { title: 'Geometric Floor', image: '/images/IMG_9564.jpg', description: 'Patterned hexagon tiles arranged with precision for visual rhythm in wet areas and entries.' },
+  ];
+  const fallbackBathrooms = [
+    { title: 'Modern Bathroom', image: '/images/IMG_0608.JPG.jpeg', description: 'A full bathroom with floor-to-ceiling tile, modern fixtures and a clean, bright finish.' },
+    { title: 'Double Vanity', image: '/images/IMG_0573.JPG.jpeg', description: 'His and hers vanities, LED mirrors and soft storage in a bright, modern bathroom.' },
+    { title: 'Complete Bathroom', image: '/images/IMG_8818.jpg', description: 'A full bathroom with freestanding tub, vanity and floor-to-ceiling tile for a refined finish.' },
+  ];
+  const fallbackShowers = [
+    { title: 'Glass Enclosure', image: '/images/IMG_0581.JPG.jpeg', description: 'Frameless glass and neutral tile create a spacious, spa-like shower.' },
+    { title: 'Recessed Niche', image: '/images/IMG_9545.jpg', description: 'A built-in niche finished with accent tile for toiletries and clean styling.' },
+    { title: 'Tub & Shower', image: '/images/IMG_0604.jpg', description: 'A tub and shower surround finished in marble-look tile for a calm, refined wet area.' },
+  ];
+  const fallbackKitchens = [
+    { title: 'Subway Backsplash', image: '/images/IMG_0308.jpg', description: 'A clean white subway tile backsplash that brightens the kitchen and complements the cabinets.' },
+    { title: 'Warm Kitchen', image: '/images/IMG_0447.jpg', description: 'A spacious open kitchen finished with marble-look flooring and warm natural light.' },
+    { title: 'Marble Backsplash', image: '/images/IMG_0595.JPG.jpeg', description: 'Marble-look tile backsplash that brings quiet luxury behind the range.' },
+  ];
+
+  const html1 = `
 <section class="hero" id="home">
   <div class="hero-inner">
     <p class="eyebrow">Tile &amp; Flooring · Residential &amp; Commercial</p>
@@ -57,39 +84,9 @@ export default function Home() {
     <p>Where life unfolds. We approach each home with the belief that finishes should be both beautiful and livable — custom showers that feel like a retreat, backsplashes that catch the morning light, and floors that carry a family through every season.</p>
   </div>
 </section>
+  `;
 
-<section class="triad" id="work">
-  <div class="container">
-    <div class="head">
-      <h2>Selected Work</h2>
-      <div class="line"></div>
-    </div>
-    <div class="triad-grid">
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0573.JPG.jpeg" alt="Modern bathroom with double vanity and round mirrors" loading="lazy" decoding="async">
-        </div>
-        <h3>Modern Bathroom</h3>
-        <p>A complete modern bathroom with marble-look floor, double vanity and a clean, glass shower.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0595.JPG.jpeg" alt="Full kitchen renovation with marble floor and island" loading="lazy" decoding="async">
-        </div>
-        <h3>Open Kitchen</h3>
-        <p>A bright open kitchen and living area finished with large-format tile, warm cabinetry and clean sightlines.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_9545.jpg" alt="Custom shower with recessed tile niche" loading="lazy" decoding="async">
-        </div>
-        <h3>Custom Shower</h3>
-        <p>Frameless glass and a recessed tile niche, finished with mitered edges for a precise, high-end look.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
+  const html2 = `
 <section class="category" id="tiles" style="background-image:url('/images/IMG_0383.jpg');">
   <div class="cat-content">
     <p class="eyebrow">Tile &amp; Flooring</p>
@@ -97,39 +94,9 @@ export default function Home() {
     <p>Every floor, wall and backsplash starts with the right tile. We install porcelain, ceramic and stone tiles with clean grout lines, level surfaces and finishes that feel solid and look refined for years.</p>
   </div>
 </section>
+  `;
 
-<section class="triad" id="work-tiles">
-  <div class="container">
-    <div class="head">
-      <h2>Selected Work</h2>
-      <div class="line"></div>
-    </div>
-    <div class="triad-grid">
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_9389.jpg" alt="Hallway with patterned hexagon floor tile" loading="lazy" decoding="async">
-        </div>
-        <h3>Patterned Hallway</h3>
-        <p>Hexagon tile flooring laid in a hallway, creating visual rhythm and long-term durability.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_9415.jpg" alt="Large-format grey floor tile" loading="lazy" decoding="async">
-        </div>
-        <h3>Large-Format Floor</h3>
-        <p>Large-format grey tile flooring with clean grout lines and a professional finish.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_9564.jpg" alt="Hexagon tile floor and shower base" loading="lazy" decoding="async">
-        </div>
-        <h3>Geometric Floor</h3>
-        <p>Patterned hexagon tiles arranged with precision for visual rhythm in wet areas and entries.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
+  const html3 = `
 <section class="category" id="bathrooms" style="background-image:url('/images/IMG_0635.JPG.jpeg');">
   <div class="cat-content">
     <p class="eyebrow">Bathrooms</p>
@@ -137,39 +104,9 @@ export default function Home() {
     <p>A bathroom should feel like a sanctuary and function like a machine. We build complete bathrooms with precise waterproofing, tile walls, floors and fixtures so the space stays beautiful through years of daily use.</p>
   </div>
 </section>
+  `;
 
-<section class="triad" id="work-bathrooms">
-  <div class="container">
-    <div class="head">
-      <h2>Selected Work</h2>
-      <div class="line"></div>
-    </div>
-    <div class="triad-grid">
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0608.JPG.jpeg" alt="Full modern bathroom with floor-to-ceiling tile" loading="lazy" decoding="async">
-        </div>
-        <h3>Modern Bathroom</h3>
-        <p>A full bathroom with floor-to-ceiling tile, modern fixtures and a clean, bright finish.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0573.JPG.jpeg" alt="Modern bathroom with double vanity and round mirrors" loading="lazy" decoding="async">
-        </div>
-        <h3>Double Vanity</h3>
-        <p>His and hers vanities, LED mirrors and soft storage in a bright, modern bathroom.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_8818.jpg" alt="Complete bathroom with tub and double vanity" loading="lazy" decoding="async">
-        </div>
-        <h3>Complete Bathroom</h3>
-        <p>A full bathroom with freestanding tub, vanity and floor-to-ceiling tile for a refined finish.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
+  const html4 = `
 <section class="category" id="showers" style="background-image:url('/images/IMG_0618.JPG.jpeg');">
   <div class="cat-content">
     <p class="eyebrow">Showers &amp; Waterproofing</p>
@@ -177,39 +114,9 @@ export default function Home() {
     <p>Every shower is built from the waterproofing layer up. We design custom layouts, recessed niches, mitered edges and tile finishes that stay beautiful through years of daily use.</p>
   </div>
 </section>
+  `;
 
-<section class="triad" id="work-showers">
-  <div class="container">
-    <div class="head">
-      <h2>Selected Work</h2>
-      <div class="line"></div>
-    </div>
-    <div class="triad-grid">
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0581.JPG.jpeg" alt="Glass shower with hexagon floor tile" loading="lazy" decoding="async">
-        </div>
-        <h3>Glass Enclosure</h3>
-        <p>Frameless glass and neutral tile create a spacious, spa-like shower.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_9545.jpg" alt="Custom shower with recessed tile niche" loading="lazy" decoding="async">
-        </div>
-        <h3>Recessed Niche</h3>
-        <p>A built-in niche finished with accent tile for toiletries and clean styling.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0604.jpg" alt="Marble-look bathtub and shower surround" loading="lazy" decoding="async">
-        </div>
-        <h3>Tub &amp; Shower</h3>
-        <p>A tub and shower surround finished in marble-look tile for a calm, refined wet area.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
+  const html5 = `
 <section class="category" id="kitchens" style="background-image:url('/images/IMG_0455.jpg');">
   <div class="cat-content">
     <p class="eyebrow">Kitchens &amp; Backsplashes</p>
@@ -217,39 +124,9 @@ export default function Home() {
     <p>The kitchen is the heart of the home, and the backsplash is its signature. We design and install tile backsplashes that balance warmth, texture and practicality, creating a focal point that works alongside prep, cooking and conversation.</p>
   </div>
 </section>
+  `;
 
-<section class="triad" id="work-kitchens">
-  <div class="container">
-    <div class="head">
-      <h2>Selected Work</h2>
-      <div class="line"></div>
-    </div>
-    <div class="triad-grid">
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0308.jpg" alt="White subway tile kitchen backsplash" loading="lazy" decoding="async">
-        </div>
-        <h3>Subway Backsplash</h3>
-        <p>A clean white subway tile backsplash that brightens the kitchen and complements the cabinets.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0447.jpg" alt="Open kitchen with marble-look flooring" loading="lazy" decoding="async">
-        </div>
-        <h3>Warm Kitchen</h3>
-        <p>A spacious open kitchen finished with marble-look flooring and warm natural light.</p>
-      </article>
-      <article class="card">
-        <div class="thumb">
-          <img src="/images/IMG_0595.JPG.jpeg" alt="Marble backsplash behind the range" loading="lazy" decoding="async">
-        </div>
-        <h3>Marble Backsplash</h3>
-        <p>Marble-look tile backsplash that brings quiet luxury behind the range.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
+  const html6 = `
 <section class="services" id="services">
   <div class="container">
     <p class="eyebrow reveal" style="text-align:center;">What We Do</p>
@@ -284,7 +161,7 @@ export default function Home() {
       <div class="service">
         <p class="num">06</p>
         <h3>Fireplace Tile</h3>
-        <p>A tiled fireplace becomes the room’s anchor. We handle layout, heat-safe materials and crisp edges for a refined focal point.</p>
+        <p>A tiled fireplace becomes the room's anchor. We handle layout, heat-safe materials and crisp edges for a refined focal point.</p>
       </div>
       <div class="service">
         <p class="num">07</p>
@@ -360,7 +237,21 @@ export default function Home() {
     </div>
   </div>
 </section>
-    ` }} />
+  `;
+
+  return (
+    <div>
+      <div dangerouslySetInnerHTML={{ __html: html1 }} />
+      <WorkSection category="Residential" eyebrow="Residential" fallback={fallbackResidential} />
+      <div dangerouslySetInnerHTML={{ __html: html2 }} />
+      <WorkSection category="Tile & Flooring" eyebrow="Tile & Flooring" fallback={fallbackTiles} />
+      <div dangerouslySetInnerHTML={{ __html: html3 }} />
+      <WorkSection category="Bathroom" eyebrow="Bathrooms" fallback={fallbackBathrooms} />
+      <div dangerouslySetInnerHTML={{ __html: html4 }} />
+      <WorkSection category="Shower" eyebrow="Showers" fallback={fallbackShowers} />
+      <div dangerouslySetInnerHTML={{ __html: html5 }} />
+      <WorkSection category="Kitchen" eyebrow="Kitchens" fallback={fallbackKitchens} />
+      <div dangerouslySetInnerHTML={{ __html: html6 }} />
     </div>
   );
 }
