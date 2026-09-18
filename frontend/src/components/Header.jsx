@@ -41,6 +41,7 @@ export default function Header() {
       <a href="#/services">Services</a>
       <a href="#/philosophy">Philosophy</a>
       <a href="#/contact">Contact</a>
+      <a href="tel:+14378698609" class="phone-link">+1 (437) 869-8609</a>
       <a href="#/contact" class="start-link">Start a Project</a>
     </nav>
   </div>

@@ -44,6 +44,22 @@
     .menu a { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; opacity: .85; transition: .2s; }
     .menu a:hover { opacity: 1; color: var(--gold); }
     .menu a[href^="tel:"] { color: var(--gold); }
+    .phone-link {
+      font-size: .8rem !important;
+      letter-spacing: .1em;
+      font-weight: 600;
+      border: 1px solid rgba(191,163,95,.4);
+      padding: .4rem .8rem;
+      border-radius: 3px;
+      transition: .3s;
+      white-space: nowrap;
+    }
+    .phone-link:hover {
+      background: var(--gold) !important;
+      color: var(--charcoal) !important;
+      border-color: var(--gold) !important;
+      opacity: 1 !important;
+    }
     .menu-toggle { display: none; background: none; border: none; color: inherit; cursor: pointer; }
     .menu-toggle span { display: block; width: 24px; height: 1.5px; background: currentColor; margin: 6px 0; }
     header.scrolled .header-inner { padding: .6rem 5%; }
