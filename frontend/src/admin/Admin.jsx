@@ -430,18 +430,46 @@ function CrudPage({ collection, singular, title, desc, columns, renderForm, seed
   );
 }
 
-/* ---------- Services (frontend + backend merged) ---------- */
+/* ---------- Services (frontend + backend merged, CRUD on database) ---------- */
 function Services() {
   const api = useApi();
   const toast = useToast();
+  const confirm = useConfirm();
   const [backendServices, setBackendServices] = useState(null);
   const [detail, setDetail] = useState(null);
+  const [editing, setEditing] = useState(null);
 
-  useEffect(() => {
+  const load = () => {
     api('/admin/services').then((d) => { if (d.success) setBackendServices(d.data); else setBackendServices([]); });
-  }, []);
+  };
+  useEffect(load, []);
 
   const allServices = backendServices ? mergeServices(backendServices) : null;
+
+  const startCreate = () => setEditing({
+    title: '', slug: '', summary: '', description: '', image: '', icon: '', published: true, order: 0, source: 'database',
+  });
+  const startEdit = (s) => setEditing({ ...s });
+  const cancelEdit = () => setEditing(null);
+
+  const save = async () => {
+    if (!editing.title?.trim()) { toast('Title is required', 'error'); return; }
+    const method = editing.id ? 'PUT' : 'POST';
+    const url = editing.id ? `/admin/services/${editing.id}` : '/admin/services';
+    const payload = { ...editing };
+    if (payload.id) delete payload.id;
+    await api(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    setEditing(null); toast(editing.id ? 'Service updated' : 'Service created', 'success'); load();
+  };
+
+  const del = async (s) => {
+    const ok = await confirm({ title: 'Delete service', message: `Are you sure you want to delete "${s.title}"?` });
+    if (!ok) return;
+    await api(`/admin/services/${s.id}`, { method: 'DELETE' });
+    toast('Service deleted', 'success'); load();
+  };
+
+  const dbServices = allServices ? allServices.filter((s) => s.source === 'database') : [];
 
   if (!allServices) return <div className="adm-panel"><TableSkeleton /></div>;
 
@@ -450,40 +478,72 @@ function Services() {
       <div className="adm-page-head">
         <div><h1>Services</h1><p>Services displayed on your website ({allServices.length} total)</p></div>
         <div className="adm-page-actions">
-          <button className="adm-btn adm-btn-primary" onClick={() => { /* TODO: open create modal */ toast('Use the form to add new services', ''); }}>+ Add Service</button>
+          <button className="adm-btn adm-btn-primary" onClick={startCreate}>+ Add Service</button>
         </div>
       </div>
 
       <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
         <span className="adm-chip"><strong>{FRONTEND_SERVICES.length}</strong>&nbsp;from frontend</span>
-        <span className="adm-chip"><strong>{backendServices?.length || 0}</strong>&nbsp;from database</span>
+        <span className="adm-chip"><strong>{dbServices.length}</strong>&nbsp;from database</span>
       </div>
 
-      <div className="adm-panel adm-panel-flush">
-        <div className="adm-table-wrap">
-          <table className="adm-table">
-            <thead><tr><th></th><th>Service</th><th>Used On</th><th>Source</th><th>Status</th><th></th></tr></thead>
-            <tbody>
-              {allServices.map((s) => (
-                <tr key={s.id}>
-                  <td>{s.image ? <img src={s.image} className="adm-thumb" alt="" /> : <div className="adm-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>⚙</div>}</td>
-                  <td>
-                    <div className="adm-row-title">{s.title}</div>
-                    <div className="adm-row-sub">{s.summary}</div>
-                  </td>
-                  <td>{s.pages ? s.pages.join(', ') : '—'}</td>
-                  <td><span className="adm-chip">{s.source === 'frontend' ? 'Frontend' : 'Database'}</span></td>
-                  <td><Badge status={s.published ? 'published' : 'draft'}>{s.published ? 'Active' : 'Draft'}</Badge></td>
-                  <td><div className="adm-cell-actions">
-                    <button className="adm-btn adm-btn-sm" onClick={() => setDetail(s)}>View</button>
-                  </div></td>
-                </tr>
+      {/* Database services — editable */}
+      {dbServices.length > 0 && (
+        <div className="adm-panel" style={{ marginBottom: '1rem' }}>
+          <div className="adm-panel-head"><h3>Database Services</h3><span className="adm-muted">{dbServices.length} editable</span></div>
+          <div className="adm-panel-body">
+            <div className="adm-media-grid">
+              {dbServices.map((s) => (
+                <div key={s.id} className="adm-media-card">
+                  <div className="adm-media-img">
+                    {s.image ? <img src={s.image} alt={s.title} loading="lazy" /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>⚙</div>}
+                    <span style={{ position: 'absolute', top: 6, left: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: 'var(--info-soft)', color: 'var(--info)' }}>Database</span>
+                  </div>
+                  <div className="adm-media-info">
+                    <div className="adm-media-name">{s.title}</div>
+                    <div className="adm-media-meta">{s.summary}</div>
+                  </div>
+                  <div className="adm-media-actions">
+                    <button onClick={() => setDetail(s)}>View</button>
+                    <button onClick={() => startEdit(s)}>Edit</button>
+                    <button className="danger" onClick={() => del(s)}>Delete</button>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Frontend services — read-only table */}
+      <div className="adm-panel">
+        <div className="adm-panel-head"><h3>Frontend Services</h3><span className="adm-muted">{FRONTEND_SERVICES.length} hardcoded in website</span></div>
+        <div className="adm-panel-body">
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead><tr><th></th><th>Service</th><th>Used On</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                {allServices.filter((s) => s.source === 'frontend').map((s) => (
+                  <tr key={s.id}>
+                    <td>{s.image ? <img src={s.image} className="adm-thumb" alt="" /> : <div className="adm-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>⚙</div>}</td>
+                    <td>
+                      <div className="adm-row-title">{s.title}</div>
+                      <div className="adm-row-sub">{s.summary}</div>
+                    </td>
+                    <td>{s.pages ? s.pages.join(', ') : '—'}</td>
+                    <td><Badge status="published">Active</Badge></td>
+                    <td><div className="adm-cell-actions">
+                      <button className="adm-btn adm-btn-sm" onClick={() => setDetail(s)}>View</button>
+                    </div></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
+      {/* View detail modal */}
       <Modal open={!!detail} onClose={() => setDetail(null)} title={detail?.title || 'Service'} size="lg"
         footer={<button className="adm-btn" onClick={() => setDetail(null)}>Close</button>}>
         {detail && (
@@ -504,9 +564,32 @@ function Services() {
             </Field>
             {detail.source === 'frontend' && (
               <div style={{ padding: '.5rem .75rem', background: 'var(--warn-soft)', borderRadius: 7, fontSize: '.82rem', color: 'var(--warn)', marginTop: '.5rem' }}>
-                ⚠ This service is hardcoded in the frontend. To edit it, modify the frontend source code. New services added via the admin panel will appear here with "Database" source.
+                ⚠ This service is hardcoded in the frontend. To edit it, modify the frontend source code.
               </div>
             )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Create/Edit modal */}
+      <Modal open={!!editing} onClose={cancelEdit} title={editing?.id ? 'Edit Service' : 'Add Service'} size="lg"
+        footer={editing && (
+          <>
+            <button className="adm-btn" onClick={cancelEdit}>Cancel</button>
+            <button className="adm-btn adm-btn-primary" onClick={save}>{editing.id ? 'Update' : 'Create'}</button>
+          </>
+        )}>
+        {editing && (
+          <div>
+            <Field label="Service Title" required><Input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder="e.g. Bathroom Renovation" /></Field>
+            <Field label="Summary"><Input value={editing.summary} onChange={(e) => setEditing({ ...editing, summary: e.target.value })} placeholder="Short one-line description" /></Field>
+            <Field label="Description"><Textarea value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} placeholder="Full description of the service" /></Field>
+            <ImagePicker value={editing.image} onChange={(v) => setEditing({ ...editing, image: v })} label="Service Image" />
+            <div className="adm-field-row">
+              <Field label="Icon (emoji or text)"><Input value={editing.icon} onChange={(e) => setEditing({ ...editing, icon: e.target.value })} placeholder="🛁" /></Field>
+              <Field label="Display Order"><Input type="number" value={editing.order} onChange={(e) => setEditing({ ...editing, order: +e.target.value })} /></Field>
+            </div>
+            <label className="adm-checkbox"><input type="checkbox" checked={editing.published} onChange={(e) => setEditing({ ...editing, published: e.target.checked })} /> Published</label>
           </div>
         )}
       </Modal>
@@ -514,49 +597,111 @@ function Services() {
   );
 }
 
-/* ---------- Projects (frontend + backend merged) ---------- */
+/* ---------- Projects (frontend + backend merged, CRUD on database) ---------- */
 function Projects() {
   const api = useApi();
+  const toast = useToast();
   const [backendProjects, setBackendProjects] = useState(null);
   const [detail, setDetail] = useState(null);
+  const [editing, setEditing] = useState(null); // { ...row } or null
+  const confirm = useConfirm();
 
-  useEffect(() => {
+  const load = () => {
     api('/admin/projects').then((d) => { if (d.success) setBackendProjects(d.data); else setBackendProjects([]); });
-  }, []);
+  };
+  useEffect(load, []);
 
   const allProjects = backendProjects ? mergeProjects(backendProjects) : null;
+
+  const startCreate = () => setEditing({
+    title: '', category: '', location: '', description: '', image: '', gallery: [],
+    featured: false, published: true, source: 'database', page: 'Projects', section: 'Backend Project',
+  });
+  const startEdit = (p) => setEditing({ ...p });
+  const cancelEdit = () => setEditing(null);
+
+  const save = async () => {
+    if (!editing.title?.trim()) { toast('Title is required', 'error'); return; }
+    const method = editing.id ? 'PUT' : 'POST';
+    const url = editing.id ? `/admin/projects/${editing.id}` : '/admin/projects';
+    const payload = { ...editing };
+    if (payload.id) delete payload.id;
+    await api(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    setEditing(null); toast(editing.id ? 'Project updated' : 'Project created', 'success'); load();
+  };
+
+  const del = async (p) => {
+    const ok = await confirm({ title: 'Delete project', message: `Are you sure you want to delete "${p.title}"? This cannot be undone.` });
+    if (!ok) return;
+    await api(`/admin/projects/${p.id}`, { method: 'DELETE' });
+    toast('Project deleted', 'success'); load();
+  };
+
+  const dbProjects = allProjects ? allProjects.filter((p) => p.source === 'database') : [];
+
   if (!allProjects) return <div className="adm-panel"><TableSkeleton /></div>;
 
-  // Group by category
-  const byCategory = {};
-  allProjects.forEach((p) => {
+  // Group frontend projects by category
+  const feByCategory = {};
+  FRONTEND_PROJECTS.forEach((p) => {
     const cat = p.category || 'Other';
-    if (!byCategory[cat]) byCategory[cat] = [];
-    byCategory[cat].push(p);
+    if (!feByCategory[cat]) feByCategory[cat] = [];
+    feByCategory[cat].push(p);
   });
 
   return (
     <>
       <div className="adm-page-head">
         <div><h1>Projects</h1><p>Portfolio and selected work ({allProjects.length} total)</p></div>
+        <div className="adm-page-actions">
+          <button className="adm-btn adm-btn-primary" onClick={startCreate}>+ Add Project</button>
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
         <span className="adm-chip"><strong>{FRONTEND_PROJECTS.length}</strong>&nbsp;from frontend</span>
-        <span className="adm-chip"><strong>{backendProjects?.length || 0}</strong>&nbsp;from database</span>
-        {Object.keys(byCategory).map((cat) => <span key={cat} className="adm-chip">{cat}: {byCategory[cat].length}</span>)}
+        <span className="adm-chip"><strong>{dbProjects.length}</strong>&nbsp;from database</span>
       </div>
 
-      {Object.entries(byCategory).map(([cat, projects]) => (
+      {/* Database projects — editable */}
+      {dbProjects.length > 0 && (
+        <div className="adm-panel" style={{ marginBottom: '1rem' }}>
+          <div className="adm-panel-head"><h3>Database Projects</h3><span className="adm-muted">{dbProjects.length} editable</span></div>
+          <div className="adm-panel-body">
+            <div className="adm-media-grid">
+              {dbProjects.map((p) => (
+                <div key={p.id} className="adm-media-card">
+                  <div className="adm-media-img">
+                    {p.image ? <img src={p.image} alt={p.title} loading="lazy" /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>▣</div>}
+                    <span style={{ position: 'absolute', top: 6, left: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: 'var(--info-soft)', color: 'var(--info)' }}>Database</span>
+                  </div>
+                  <div className="adm-media-info">
+                    <div className="adm-media-name">{p.title}</div>
+                    <div className="adm-media-meta">{p.category}{p.location ? ` · ${p.location}` : ''}</div>
+                  </div>
+                  <div className="adm-media-actions">
+                    <button onClick={() => setDetail(p)}>View</button>
+                    <button onClick={() => startEdit(p)}>Edit</button>
+                    <button className="danger" onClick={() => del(p)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Frontend projects — read-only, grouped by category */}
+      {Object.entries(feByCategory).map(([cat, projects]) => (
         <div key={cat} className="adm-panel" style={{ marginBottom: '1rem' }}>
-          <div className="adm-panel-head"><h3>{cat}</h3><span className="adm-muted">{projects.length} projects</span></div>
+          <div className="adm-panel-head"><h3>{cat}</h3><span className="adm-muted">{projects.length} frontend projects (read-only)</span></div>
           <div className="adm-panel-body">
             <div className="adm-media-grid">
               {projects.map((p) => (
                 <div key={p.id} className="adm-media-card" onClick={() => setDetail(p)} style={{ cursor: 'pointer' }}>
                   <div className="adm-media-img">
                     {p.image ? <img src={p.image} alt={p.title} loading="lazy" /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>▣</div>}
-                    <span style={{ position: 'absolute', top: 6, left: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: p.source === 'frontend' ? 'var(--accent-soft)' : 'var(--info-soft)', color: p.source === 'frontend' ? 'var(--accent)' : 'var(--info)' }}>{p.source === 'frontend' ? 'Frontend' : 'Database'}</span>
+                    <span style={{ position: 'absolute', top: 6, left: 6, fontSize: '.62rem', fontWeight: 600, padding: '.15rem .4rem', borderRadius: 4, background: 'var(--accent-soft)', color: 'var(--accent)' }}>Frontend</span>
                   </div>
                   <div className="adm-media-info">
                     <div className="adm-media-name">{p.title}</div>
@@ -569,6 +714,7 @@ function Projects() {
         </div>
       ))}
 
+      {/* View detail modal */}
       <Modal open={!!detail} onClose={() => setDetail(null)} title={detail?.title || 'Project'} size="lg"
         footer={<button className="adm-btn" onClick={() => setDetail(null)}>Close</button>}>
         {detail && (
@@ -590,6 +736,32 @@ function Projects() {
           </div>
         )}
       </Modal>
+
+      {/* Create/Edit modal */}
+      <Modal open={!!editing} onClose={cancelEdit} title={editing?.id ? 'Edit Project' : 'Add Project'} size="lg"
+        footer={editing && (
+          <>
+            <button className="adm-btn" onClick={cancelEdit}>Cancel</button>
+            <button className="adm-btn adm-btn-primary" onClick={save}>{editing.id ? 'Update' : 'Create'}</button>
+          </>
+        )}>
+        {editing && (
+          <div>
+            <div className="adm-field-row">
+              <Field label="Project Title" required><Input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder="e.g. Modern Bathroom Remodel" /></Field>
+              <Field label="Category"><Input value={editing.category} onChange={(e) => setEditing({ ...editing, category: e.target.value })} placeholder="Bathroom" /></Field>
+            </div>
+            <div className="adm-field-row">
+              <Field label="Location"><Input value={editing.location} onChange={(e) => setEditing({ ...editing, location: e.target.value })} placeholder="Edmonton, AB" /></Field>
+              <Field label="Featured"><Select value={editing.featured ? '1' : '0'} onChange={(e) => setEditing({ ...editing, featured: e.target.value === '1' })}><option value="0">No</option><option value="1">Yes</option></Select></Field>
+            </div>
+            <Field label="Description"><Textarea value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} /></Field>
+            <ImagePicker value={editing.image} onChange={(v) => setEditing({ ...editing, image: v })} label="Cover Image" />
+            <label className="adm-checkbox"><input type="checkbox" checked={editing.published} onChange={(e) => setEditing({ ...editing, published: e.target.checked })} /> Published</label>
+          </div>
+        )}
+      </Modal>
+
     </>
   );
 }
