@@ -46,6 +46,16 @@ export default function AboutTestimonials() {
   // Reset index if testimonials change or perView changes
   useEffect(() => { if (index > maxIndex) setIndex(maxIndex); }, [maxIndex, index]);
 
+  // Autoplay — advance every 5 seconds, pause on hover/touch
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    if (!testimonials || testimonials.length <= perView || paused) return;
+    const timer = setInterval(() => {
+      setIndex((i) => (i >= maxIndex ? 0 : i + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [testimonials, perView, paused, maxIndex]);
+
   // Keyboard navigation
   useEffect(() => {
     const onKey = (e) => {
@@ -77,12 +87,15 @@ export default function AboutTestimonials() {
           <div
             className="abt-test-track"
             style={{ transform: `translateX(-${index * (100 / perView)}%)` }}
-            onTouchStart={(e) => setTouchStart(e.touches[0].clientX)}
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onTouchStart={(e) => { setPaused(true); setTouchStart(e.touches[0].clientX); }}
             onTouchEnd={(e) => {
               if (touchStart === null) return;
               const diff = touchStart - e.changedTouches[0].clientX;
               if (Math.abs(diff) > 50) { diff > 0 ? next() : prev(); }
               setTouchStart(null);
+              setPaused(false);
             }}
           >
             {testimonials.map((t, i) => (
