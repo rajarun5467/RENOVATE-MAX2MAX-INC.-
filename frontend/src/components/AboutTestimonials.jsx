@@ -22,13 +22,15 @@ export default function AboutTestimonials() {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  // Reveal on scroll
+  // Reveal on scroll — add pending class first, then IntersectionObserver reveals
   useEffect(() => {
     const reveals = sectionRef.current?.querySelectorAll('.abt-test-reveal');
     if (!reveals) return;
+    reveals.forEach((el) => el.classList.add('abt-test-pending'));
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
+          e.target.classList.remove('abt-test-pending');
           e.target.classList.add('abt-test-visible');
           io.unobserve(e.target);
         }

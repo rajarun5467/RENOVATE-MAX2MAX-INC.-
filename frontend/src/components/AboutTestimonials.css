@@ -253,13 +253,13 @@
 
 /* Reveal animation */
 .abt-test-reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity .8s ease, transform .8s ease;
-}
-.abt-test-reveal.abt-test-visible {
   opacity: 1;
   transform: none;
+  transition: opacity .8s ease, transform .8s ease;
+}
+.abt-test-reveal.abt-test-pending {
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 /* Responsive */
